@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sistema PPCP — Jair Móveis</title>
+<style>
+:root{--pr:#1a4a7a;--pl:#2563a8;--ac:#e67e22;--ok:#27ae60;--dn:#e74c3c;--wn:#f39c12;--bg:#f0f2f5;--cd:#fff;--br:#d1d9e0;--tx:#2c3e50;--mt:#7f8c8d;--sw:252px;--f1:#1565c0;--f2:#6a1b9a;--f3:#1b5e20;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh;font-size:14px}
+#sb{width:var(--sw);background:var(--pr);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;transition:transform .3s}
+#sb .brand{padding:16px;border-bottom:1px solid rgba(255,255,255,.15)}
+#sb .brand h1{font-size:15px;font-weight:700}
+#sb .brand p{font-size:11px;opacity:.7;margin-top:2px}
+#sb nav a{display:flex;align-items:center;gap:9px;padding:9px 16px;color:rgba(255,255,255,.8);text-decoration:none;font-size:13px;cursor:pointer;transition:background .15s}
+#sb nav a:hover,#sb nav a.active{background:rgba(255,255,255,.12);color:#fff}
+#sb nav a .ico{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+#sb nav .sl{font-size:10px;text-transform:uppercase;letter-spacing:1px;opacity:.5;padding:10px 16px 3px}
+#sb .bot{padding:10px 16px;border-top:1px solid rgba(255,255,255,.15);font-size:11px;opacity:.5}
+#main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+#topbar{background:var(--cd);border-bottom:1px solid var(--br);padding:11px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:10px}
+#topbar h2{font-size:15px;font-weight:600}
+#mt{display:none;background:none;border:none;font-size:22px;cursor:pointer;padding:2px 6px;color:var(--pr)}
+#ct{padding:18px;flex:1}
+.view{display:none}.view.active{display:block}
+.card{background:var(--cd);border:1px solid var(--br);border-radius:10px;padding:16px;margin-bottom:12px}
+.card-t{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:6px;font-size:13px;font-weight:500;border:none;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.btn:hover{opacity:.85}
+.bp{background:var(--pl);color:#fff}.ba{background:var(--ac);color:#fff}.bok{background:var(--ok);color:#fff}
+.bdn{background:var(--dn);color:#fff}.bg{background:transparent;border:1px solid var(--br);color:var(--tx)}
+.bpr{background:var(--pr);color:#fff}.bs{padding:4px 9px;font-size:12px}
+.fr{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.fg{display:flex;flex-direction:column;gap:4px;flex:1;min-width:130px}
+.fg label{font-size:12px;font-weight:500;color:var(--mt)}
+.fg input,.fg select,.fg textarea{border:1px solid var(--br);border-radius:6px;padding:7px 9px;font-size:13px;color:var(--tx);background:#fff;outline:none;transition:border-color .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pl)}
+.fg textarea{resize:vertical;min-height:60px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sbox{background:var(--cd);border:1px solid var(--br);border-radius:10px;padding:14px 16px}
+.sbox .val{font-size:24px;font-weight:700;color:var(--pr)}.sbox .lbl{font-size:12px;color:var(--mt);margin-top:2px}
+.pb{height:7px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.pb .fi{height:100%;background:var(--ok);border-radius:4px;transition:width .4s}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mt);border-bottom:2px solid var(--br);background:#f8f9fb;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #f0f2f5;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+.bdg{display:inline-block;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap}
+.bok2{background:#d4edda;color:#155724}.bwn{background:#fff3cd;color:#856404}
+.bdn2{background:#f8d7da;color:#721c24}.bin{background:#cce5ff;color:#004085}
+.bgr{background:#e2e3e5;color:#383d41}.bpu{background:#ede7f6;color:#4a148c}
+.btl{background:#e0f7fa;color:#006064}.bor{background:#fff3e0;color:#e65100}
+.s1{background:#eceff1;color:#546e7a}.s2{background:#e3f2fd;color:#1565c0}
+.s3{background:#fff3e0;color:#e65100}.s4{background:#f3e5f5;color:#6a1b9a}
+.s5{background:#ede7f6;color:#4a148c}.s6{background:#fff3cd;color:#856404}
+.s7{background:#e8f5e9;color:#2e7d32}.s8{background:#e0f7fa;color:#006064}
+.s9{background:#fce4ec;color:#880e4f}.s10{background:#d4edda;color:#155724}
+.funil{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.fbox{flex:1;min-width:110px;border-radius:10px;padding:14px 16px;border:1px solid var(--br)}
+.fbox .fv{font-size:26px;font-weight:700}.fbox .fl{font-size:12px;margin-top:2px}.fbox .fs{font-size:11px;margin-top:6px;opacity:.75}
+.fx1{background:#e3f2fd;border-color:#bbdefb}.fx1 .fv{color:#0d47a1}
+.fx2{background:#f3e5f5;border-color:#ce93d8}.fx2 .fv{color:#4a148c}
+.fx3{background:#e8f5e9;border-color:#a5d6a7}.fx3 .fv{color:#1b5e20}
+.fxd{background:#f8f9fa;border-color:#dee2e6}.fxd .fv{color:#495057}
+.fase-sep{height:3px;border-radius:2px;margin:6px 0 10px}
+.f1sep{background:linear-gradient(90deg,var(--f1),transparent)}
+.f2sep{background:linear-gradient(90deg,var(--f2),transparent)}
+.f3sep{background:linear-gradient(90deg,var(--f3),transparent)}
+.fhdr{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:8px;margin-bottom:4px;cursor:pointer;user-select:none;border:none;width:100%;text-align:left}
+.fhdr:hover{opacity:.92}.fhdr.f1c{background:var(--f1);color:#fff}
+.fhdr.f2c{background:var(--f2);color:#fff}.fhdr.f3c{background:var(--f3);color:#fff}
+.fhdr .fn{background:rgba(255,255,255,.25);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.fhdr h3{font-size:13px;font-weight:600;flex:1}.fhdr .fmeta{font-size:12px;opacity:.85}
+.fhdr .fch{transition:transform .2s;font-size:11px}.fhdr.col .fch{transform:rotate(-90deg)}
+.fbody{margin-bottom:12px}.fbody.hid{display:none}
+.bh{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;color:#fff;border-radius:7px 7px 0 0;cursor:pointer;user-select:none}
+.bh .bi{display:flex;align-items:center;gap:8px}.bh h4{font-size:13px;font-weight:600}
+.bh .bc{font-size:11px;opacity:.8}.bh .ch{transition:transform .2s;font-size:11px}.bh.col .ch{transform:rotate(-90deg)}
+.bb{border:1px solid var(--br);border-top:none;border-radius:0 0 7px 7px;margin-bottom:8px}
+.bb.hid{display:none}.bblock{margin-bottom:8px}
+.ci{display:flex;align-items:flex-start;gap:9px;padding:9px 14px;border-bottom:1px solid #f5f5f5;transition:background .1s}
+.ci:hover{background:#fafbfc}.ci:last-child{border-bottom:none}
+.ci.dn .itx{text-decoration:line-through;opacity:.5}
+.ci input[type=checkbox]{width:15px;height:15px;margin-top:2px;cursor:pointer;accent-color:var(--ok);flex-shrink:0}
+.ico2{flex:1;min-width:0}
+.itx{font-size:13px;line-height:1.45;word-break:break-word}
+.inota{font-size:11px;color:#666;margin-top:3px;font-style:italic;line-height:1.4;padding:4px 8px;background:#f8f9fa;border-radius:4px;border-left:2px solid #dee2e6}
+.ivalb{margin-top:5px}
+.ivalb input{border:1px solid var(--br);border-radius:5px;padding:4px 8px;font-size:12px;width:100%;max-width:300px;outline:none}
+.ivalb input:focus{border-color:var(--pl)}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:1px 5px;border-radius:10px;margin-left:5px;vertical-align:middle}
+.tc{background:#fde8e8;color:var(--dn)}.ta{background:#fef3cd;color:#856404}
+.tg{background:#e0f0ff;color:var(--pl)}.tp{background:#e8f5e9;color:#2e7d32}
+.obs-b{padding:9px 14px;background:#f8f9fb;border-top:1px solid var(--br)}
+.obs-b label{font-size:11px;color:var(--mt);display:block;margin-bottom:4px}
+.obs-b textarea{width:100%;border:1px solid var(--br);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--tx);background:#fff;resize:vertical;min-height:48px;outline:none}
+.obs-b textarea:focus{border-color:var(--pl)}
+.tbtn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;border:2px solid var(--br);border-radius:8px;cursor:pointer;transition:all .15s;background:#fff;font-size:11px;font-weight:500;color:var(--mt);min-width:72px;text-align:center}
+.tbtn:hover{border-color:var(--pl);color:var(--pl);background:#f0f6ff}
+.tbtn.sel{border-color:var(--pr);background:var(--pr);color:#fff}
+.tbtn .tico{font-size:20px}
+.ei{display:flex;align-items:center;gap:7px;padding:7px 12px;border-bottom:1px solid #f5f5f5}
+.ei:hover{background:#fafbfc}
+.ei .ts{font-size:12px;border:1px solid var(--br);border-radius:4px;padding:2px 4px}
+.ei .etx{flex:1;font-size:13px;border:1px solid transparent;border-radius:4px;padding:3px 6px;background:transparent;color:var(--tx);min-width:0}
+.ei .etx:focus{border-color:var(--pl);background:#fff;outline:none}
+.eadd{display:flex;gap:7px;padding:8px 12px;background:#f8f9fb;border-top:1px solid var(--br);flex-wrap:wrap}
+.eadd input{flex:1;min-width:140px;border:1px solid var(--br);border-radius:6px;padding:6px 8px;font-size:13px;outline:none}
+.eadd select{border:1px solid var(--br);border-radius:6px;padding:6px 8px;font-size:12px}
+.ncath{font-size:13px;font-weight:600;color:var(--pr);padding:8px 12px;background:#f0f6ff;border-radius:6px;margin-bottom:7px;cursor:pointer;display:flex;justify-content:space-between;user-select:none}
+.nitem{padding:10px 14px;background:#fff;border:1px solid var(--br);border-radius:6px;margin-bottom:6px}
+.nitem .nt{font-size:13px;font-weight:600;margin-bottom:4px}.nitem .nd{font-size:12px;color:#555;line-height:1.55;white-space:pre-wrap}
+.di{padding:10px 14px;border-left:3px solid var(--pl);background:#f8fbff;border-radius:0 7px 7px 0;margin-bottom:8px}
+.di .dm{font-size:11px;color:var(--mt);margin-top:4px}
+.pi{padding:11px 14px;border-left:4px solid var(--ac);background:#fffdf8;border-radius:0 7px 7px 0;margin-bottom:8px}
+.pi .pt{font-size:13px;font-weight:600;margin-bottom:3px}
+.ni{padding:11px 14px;border-left:4px solid var(--pl);background:#f5f9ff;border-radius:0 7px 7px 0;margin-bottom:8px}
+.alrt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;margin-bottom:8px;font-size:13px;background:#fff3cd;border-left:3px solid var(--wn)}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px}
+.mo.open{display:flex}
+.md{background:var(--cd);border-radius:12px;padding:20px;width:580px;max-width:100%;max-height:90vh;overflow-y:auto}
+.md h3{font-size:15px;font-weight:600;margin-bottom:14px}
+.mdf{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+#toast{position:fixed;bottom:20px;right:20px;background:#2d3748;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none}
+#toast.show{opacity:1;transform:translateY(0)}
+.sbov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+.sbov.open{display:block}
+.phdr{display:none}
+@media print{
+  #sb,#topbar,#mt,.nop,.obs-b textarea,.eadd,.fch,.ch{display:none!important}
+  #main{margin-left:0!important}body{background:#fff;font-size:11px}
+  .phdr{display:block!important}
+  .bb.hid,.fbody.hid{display:block!important}
+  .bh,.fhdr{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pb .fi,.bdg,.tag{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .obsp{display:block!important}
+}
+.obsp{display:none}
+@media(max-width:768px){
+  #sb{transform:translateX(-100%)}
+  #sb.open{transform:translateX(0)}
+  #main{margin-left:0}
+  #mt{display:block}
+  .g2,.g4{grid-template-columns:1fr}
+  .funil{flex-direction:column}
+}
+</style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<div id="sb">
+  <div class="brand"><h1>Sistema PPCP</h1><p>Jair Móveis — Projetos e Produção</p></div>
+  <nav>
+    <div class="sl">Principal</div>
+    <a class="active" onclick="go('dash')" data-view="dash"><span class="ico">📊</span>Dashboard</a>
+    <a onclick="go('ck')" data-view="ck"><span class="ico">✅</span>Checklist</a>
+    <div class="sl">Cadastros</div>
+    <a onclick="go('amb')" data-view="amb"><span class="ico">🏠</span>Ambientes</a>
+    <a onclick="go('dec')" data-view="dec"><span class="ico">📝</span>Decisões</a>
+    <a onclick="go('fresas')" data-view="fresas"><span class="ico">⚙️</span>Fresas CNC</a>
+    <a onclick="go('pad')" data-view="pad"><span class="ico">📋</span>Padrões</a>
+    <a onclick="go('normas')" data-view="normas"><span class="ico">📌</span>Normas PT</a>
+    <a onclick="go('notas')" data-view="notas"><span class="ico">💡</span>Notas Técnicas</a>
+    <div class="sl">Configuração</div>
+    <a onclick="go('edit')" data-view="edit"><span class="ico">✏️</span>Editar Checklists</a>
+    <div class="sl">Sincronização</div>
+    <a onclick="go('sync')" data-view="sync"><span class="ico">☁️</span>Google Drive</a>
+    <div class="sl">Dados</div>
+    <a onclick="expD()"><span class="ico">💾</span>Exportar JSON</a>
+    <a onclick="impD()"><span class="ico">📂</span>Importar JSON</a>
+  </nav>
+  <div class="bot">v5.0 · PPCP · offline</div>
+</div>
+<div class="sbov" id="sbov" onclick="cSB()"></div>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button id="mt" onclick="tSB()">☰</button>
+      <h2 id="ttl">Dashboard</h2>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn bg bs nop" onclick="go('sync')" title="Sincronização Google Drive" style="display:flex;align-items:center;gap:6px">
+        <span id="syncdot" style="width:9px;height:9px;border-radius:50%;background:#ccc;display:inline-block;flex-shrink:0"></span>
+        <span id="syncind">Offline</span>
+      </button>
+      <button class="btn bg bs nop" onclick="rst()">🗑 Resetar</button>
+    </div>
+  </div>
+  <div id="ct">
+
+    <div id="view-dash" class="view active">
+      <div class="funil">
+        <div class="fbox fx1"><div class="fv" id="fn1">0</div><div class="fl">Proj. Comercial</div><div class="fs" id="fn1s">—</div></div>
+        <div class="fbox fx2"><div class="fv" id="fn2">0</div><div class="fl">Engenharia</div><div class="fs" id="fn2s">—</div></div>
+        <div class="fbox fx3"><div class="fv" id="fn3">0</div><div class="fl">Industrialização</div><div class="fs" id="fn3s">—</div></div>
+        <div class="fbox fxd"><div class="fv" id="fnd">0</div><div class="fl">Entregues</div><div class="fs">concluídos</div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="card-t">📋 Ambientes recentes</div><div id="d-amb"></div></div>
+        <div class="card"><div class="card-t">⚠️ Alertas</div><div id="d-alrt"></div><div class="card-t" style="margin-top:12px">⚙️ Fresas</div><div id="d-fr"></div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="card-t">📝 Últimas decisões</div><div id="d-dec"></div></div>
+        <div class="card"><div class="card-t">📋 Padrões e Normas</div><div id="d-norm"></div></div>
+      </div>
+    </div>
+
+    <div id="view-ck" class="view">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px" class="nop">
+        <label style="font-size:13px;font-weight:500">Ambiente:</label>
+        <select id="ck-sel" onchange="loadCK()" style="border:1px solid var(--br);border-radius:6px;padding:6px 9px;font-size:13px"><option value="">— selecione —</option></select>
+        <button class="btn bp bs" onclick="go('amb')">+ Novo</button>
+        <button class="btn bg bs" onclick="go('edit')">✏️ Editar</button>
+        <button class="btn bg bs" id="pbtn" style="display:none" onclick="window.print()">🖨️ Imprimir PDF</button>
+        <span id="ck-bdg" style="display:none;background:var(--pl);color:#fff;padding:4px 11px;border-radius:20px;font-size:12px"></span>
+      </div>
+      <div class="phdr" id="phdr"></div>
+      <div id="ck-ct"><div class="card" style="text-align:center;color:var(--mt);padding:32px">Selecione um ambiente para carregar o checklist.</div></div>
+    </div>
+
+    <div id="view-edit" class="view">
+      <div class="card">
+        <div class="card-t">✏️ Editar Checklists</div>
+        <p style="font-size:13px;color:var(--mt);margin-bottom:12px">Blocos globais = todos os ambientes. Blocos por tipo = somente aquele tipo.</p>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px">
+          <button class="btn bs bpr" id="ebtng" onclick="setSc('global')">🌐 Globais</button>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap" id="editipos"></div>
+      </div>
+      <div id="esc-lbl" style="font-size:13px;font-weight:600;color:var(--pr);margin-bottom:8px;padding:0 2px"></div>
+      <div id="edit-ct"></div>
+      <div class="card" style="border:2px dashed var(--br)">
+        <div class="card-t">+ Criar Novo Bloco</div>
+        <div class="fr">
+          <div class="fg"><label>Nome do bloco</label><input type="text" id="nb-n" placeholder="Ex: Conferência Especial"></div>
+          <div class="fg" style="max-width:155px"><label>Fase</label><select id="nb-fase"><option value="f1">Fase 1 — Comercial</option><option value="f2" selected>Fase 2 — Engenharia</option><option value="f3">Fase 3 — Industrialização</option></select></div>
+          <div class="fg" style="max-width:150px"><label>Escopo</label><select id="nb-sc"><option value="global">Global (todos)</option><option value="cozinha">Cozinha</option><option value="dormitorio">Dormitório</option><option value="banheiro">Banheiro</option><option value="homeoffice">Home Office</option><option value="closet">Closet</option><option value="sala">Sala</option><option value="areaservico">Área Serviço</option><option value="varanda">Varanda</option><option value="outro">Outro</option></select></div>
+          <div class="fg" style="max-width:90px"><label>Cor</label><input type="color" id="nb-cor" value="#1a4a7a" style="height:38px;padding:2px;border:1px solid var(--br);border-radius:6px;cursor:pointer"></div>
+          <div class="fg" style="justify-content:flex-end;align-items:flex-end"><button class="btn bok" onclick="cBloco()">Criar Bloco</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-amb" class="view">
+      <div class="card">
+        <div class="card-t">+ Novo Ambiente</div>
+        <div class="fr">
+          <div class="fg"><label>Cliente</label><input type="text" id="a-cli" placeholder="Nome do cliente"></div>
+          <div class="fg"><label>Ambiente</label><input type="text" id="a-nom" placeholder="Ex: Cozinha, Quarto principal"></div>
+          <div class="fg" style="max-width:120px"><label>Código</label><input type="text" id="a-cod" placeholder="PRJ-001"></div>
+          <div class="fg" style="max-width:90px"><label>Versão</label><input type="text" id="a-ver" placeholder="V01"></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Arquiteto</label><input type="text" id="a-arq" placeholder="Opcional"></div>
+          <div class="fg"><label>Projetista</label><input type="text" id="a-pj" placeholder="Seu nome"></div>
+          <div class="fg" style="max-width:155px"><label>Prazo</label><input type="date" id="a-prz"></div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;font-weight:500;color:var(--mt);display:block;margin-bottom:8px">Tipo de ambiente</label>
+          <div style="display:flex;gap:7px;flex-wrap:wrap" id="tipobtns"></div>
+          <input type="hidden" id="a-tipo" value="">
+        </div>
+        <button class="btn bp" onclick="salvarAmb()">Cadastrar Ambiente</button>
+      </div>
+      <div class="card">
+        <div class="card-t">🏠 Ambientes</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <div style="position:relative;flex:1;min-width:180px"><span style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--mt);font-size:13px">🔍</span><input type="text" id="a-srch" placeholder="Buscar cliente ou código..." oninput="renderAmb()" style="width:100%;border:1px solid var(--br);border-radius:6px;padding:7px 9px 7px 30px;font-size:13px;outline:none"></div>
+          <select id="a-fil" onchange="renderAmb()" style="border:1px solid var(--br);border-radius:6px;padding:7px 9px;font-size:13px"><option value="">Todos os status</option><option value="1">Recebido</option><option value="2">Em projeto comercial</option><option value="3">Aguardando aprovação</option><option value="4">Aprovado</option><option value="5">Em engenharia</option><option value="6">Revisão técnica</option><option value="7">Liberado PCP</option><option value="8">Em produção</option><option value="9">Em montagem</option><option value="10">Entregue</option></select>
+        </div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Código</th><th>Cliente</th><th>Ambiente</th><th>Tipo</th><th>Projetista</th><th>Status</th><th>Progresso</th><th>Prazo</th><th>Ações</th></tr></thead><tbody id="a-tb"></tbody></table></div>
+      </div>
+    </div>
+
+    <div id="view-dec" class="view">
+      <div class="card">
+        <div class="card-t">+ Registrar Decisão</div>
+        <div class="fr">
+          <div class="fg"><label>Ambiente</label><select id="dc-amb"><option value="">— selecione —</option></select></div>
+          <div class="fg" style="max-width:170px"><label>Categoria</label><select id="dc-cat"><option value="acabamento">Acabamento/Cor</option><option value="ferragem">Ferragem</option><option value="eletrico">Elétrico/Hidráulico</option><option value="eletrodomestico">Eletrodoméstico</option><option value="estrutura">Estrutura</option><option value="aprovacao">Aprovação</option><option value="ppcp">PPCP/Produção</option><option value="outros">Outros</option></select></div>
+          <div class="fg"><label>Decisão</label><input type="text" id="dc-tit" placeholder="Resumo"></div>
+        </div>
+        <div class="fr"><div class="fg"><label>Detalhamento</label><textarea id="dc-det" placeholder="Detalhes, valores, referências..."></textarea></div></div>
+        <button class="btn bp" onclick="salvarDec()">Salvar</button>
+      </div>
+      <div class="card">
+        <div class="card-t">📝 Decisões</div>
+        <div class="fr" style="margin-bottom:8px"><div class="fg" style="max-width:240px"><label>Filtrar</label><select id="dc-fil" onchange="renderDec()"><option value="">Todos</option></select></div></div>
+        <div id="dc-lst"></div>
+      </div>
+    </div>
+
+    <div id="view-fresas" class="view">
+      <div class="card">
+        <div class="card-t">+ Cadastrar Fresa CNC</div>
+        <div class="fr">
+          <div class="fg" style="max-width:95px"><label>Posição (T)</label><select id="f-pos"><option value="">—</option><option>T1</option><option>T2</option><option>T3</option><option>T4</option><option>T5</option><option>T6</option><option>T7</option><option>T8</option><option>T9</option><option>T10</option><option>T21</option><option>T22</option><option>T23</option><option>T24</option><option>T25</option><option>T26</option><option>T27</option><option>T28</option><option>T29</option><option value="livre">Livre</option></select></div>
+          <div class="fg"><label>Nome</label><input type="text" id="f-nom" placeholder="Ex: Compression Levita Ø6mm"></div>
+          <div class="fg" style="max-width:145px"><label>Tipo</label><select id="f-tip"><option value="compression">Compression</option><option value="upcut">Upcut</option><option value="downcut">Downcut</option><option value="vbit">V-Bit</option><option value="roundover">Round-Over</option><option value="forstner">Forstner</option><option value="broca">Broca</option><option value="plana">Fresa plana</option><option value="bola">Fresa de bola</option><option value="outros">Outros</option></select></div>
+          <div class="fg" style="max-width:100px"><label>Diâm. (mm)</label><input type="number" id="f-dia" min="0" step="0.1" placeholder="6"></div>
+          <div class="fg" style="max-width:110px"><label>Compr. útil</label><input type="number" id="f-comp" min="0" step="0.1" placeholder="22"></div>
+        </div>
+        <div class="fr">
+          <div class="fg" style="max-width:90px"><label>Dentes</label><input type="number" id="f-den" min="1" max="12" placeholder="3"></div>
+          <div class="fg" style="max-width:110px"><label>RPM</label><input type="number" id="f-rpm" step="500" placeholder="16000"></div>
+          <div class="fg" style="max-width:120px"><label>Avanço F</label><input type="number" id="f-ava" step="100" placeholder="6000"></div>
+          <div class="fg" style="max-width:100px"><label>AP (mm)</label><input type="number" id="f-ap" step="0.5" placeholder="20"></div>
+          <div class="fg" style="max-width:145px"><label>Material</label><select id="f-mat"><option value="todos">Todos</option><option value="mdf6">MDF 6mm</option><option value="mdf15">MDF 15mm</option><option value="mdf18">MDF 18mm</option><option value="mdf25">MDF 25mm</option><option value="mdp">MDP/BP</option><option value="acrilico">Acrílico</option><option value="pvc">PVC</option></select></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Uso / Aplicação</label><input type="text" id="f-uso" placeholder="Ex: Corte de contorno MDF 18mm"></div>
+          <div class="fg" style="max-width:155px"><label>Estado</label><select id="f-est"><option value="ok">✅ OK</option><option value="desgaste">⚠️ Desgaste</option><option value="troca">❌ Trocar</option><option value="ausente">🚫 Ausente</option></select></div>
+          <div class="fg" style="justify-content:flex-end;align-items:flex-end"><button class="btn bp" onclick="salvarFresa()">Cadastrar</button></div>
+        </div>
+        <div class="fr"><div class="fg"><label>Observações</label><input type="text" id="f-obs" placeholder="Cuidados, sentido..."></div></div>
+      </div>
+      <div class="card"><div class="card-t">⚙️ Fresas</div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Pos.</th><th>Nome</th><th>Tipo</th><th>Ø</th><th>Comp.</th><th>Dentes</th><th>RPM</th><th>F</th><th>AP</th><th>Mat.</th><th>Uso</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="f-tb"></tbody></table></div>
+      </div>
+    </div>
+
+    <div id="view-pad" class="view">
+      <div class="card">
+        <div class="card-t">+ Novo Padrão Técnico</div>
+        <div class="fr">
+          <div class="fg"><label>Módulo / Título</label><input type="text" id="p-tit" placeholder="Ex: Porta de aéreo com espelho"></div>
+          <div class="fg" style="max-width:165px"><label>Ambiente</label><select id="p-amb"><option value="todos">Todos</option><option value="cozinha">Cozinha</option><option value="dormitorio">Dormitório</option><option value="banheiro">Banheiro</option><option value="homeoffice">Home Office</option><option value="closet">Closet</option><option value="sala">Sala</option><option value="areaservico">Área Serviço</option><option value="outro">Outro</option></select></div>
+          <div class="fg" style="max-width:155px"><label>Categoria</label><select id="p-cat"><option value="posicionamento">Posicionamento</option><option value="folgas">Folgas</option><option value="material">Material</option><option value="ferragem">Ferragem</option><option value="usinagem">Usinagem</option><option value="instalacao">Instalação</option><option value="led">LED</option><option value="acabamento">Acabamento</option><option value="outro">Outro</option></select></div>
+        </div>
+        <div class="fr"><div class="fg"><label>Regra / Padrão</label><textarea id="p-reg"></textarea></div></div>
+        <div class="fr"><div class="fg"><label>Variações por material / cor</label><textarea id="p-var" style="min-height:50px" placeholder="Ex: Branco Ártico = 12,5mm / Demais = 15,5mm"></textarea></div></div>
+        <button class="btn ba" onclick="salvarPad()">Salvar Padrão</button>
+      </div>
+      <div class="card"><div class="card-t">📋 Padrões</div>
+        <div class="fr" style="margin-bottom:8px">
+          <div class="fg" style="max-width:180px"><label>Ambiente</label><select id="p-fa" onchange="renderPad()"><option value="">Todos</option><option value="todos">Todos ambientes</option><option value="cozinha">Cozinha</option><option value="dormitorio">Dormitório</option><option value="banheiro">Banheiro</option><option value="homeoffice">Home Office</option><option value="closet">Closet</option><option value="sala">Sala</option></select></div>
+          <div class="fg" style="max-width:155px"><label>Categoria</label><select id="p-fc" onchange="renderPad()"><option value="">Todas</option><option value="posicionamento">Posicionamento</option><option value="folgas">Folgas</option><option value="material">Material</option><option value="ferragem">Ferragem</option><option value="usinagem">Usinagem</option><option value="instalacao">Instalação</option><option value="led">LED</option><option value="acabamento">Acabamento</option></select></div>
+        </div>
+        <div id="p-lst"></div>
+      </div>
+    </div>
+
+    <div id="view-normas" class="view">
+      <div class="card">
+        <div class="card-t">+ Nova Norma / Procedimento</div>
+        <div class="fr">
+          <div class="fg"><label>Título</label><input type="text" id="n-tit" placeholder="Ex: Troca da chapa de sacrifício"></div>
+          <div class="fg" style="max-width:180px"><label>Categoria</label><select id="n-cat"><option value="manutencao_cnc">Manutenção CNC</option><option value="qualidade">Qualidade</option><option value="seguranca">Segurança</option><option value="producao">Produção</option><option value="fresas">Fresas</option><option value="material">Material</option><option value="outro">Outro</option></select></div>
+          <div class="fg" style="max-width:185px"><label>Periodicidade</label><select id="n-per"><option value="cada_chapa">A cada chapa</option><option value="cada_lote">A cada lote</option><option value="diario">Diariamente</option><option value="semanal">Semanalmente</option><option value="mensal">Mensalmente</option><option value="necessario">Quando necessário</option><option value="troca_fresa">A cada troca de fresa</option></select></div>
+          <div class="fg" style="max-width:155px"><label>Responsável</label><input type="text" id="n-res"></div>
+        </div>
+        <div class="fr"><div class="fg"><label>Procedimento</label><textarea id="n-des" style="min-height:80px"></textarea></div></div>
+        <button class="btn ba" onclick="salvarNorma()">Salvar Norma</button>
+      </div>
+      <div class="card"><div class="card-t">📌 Normas</div>
+        <div class="fr" style="margin-bottom:8px"><div class="fg" style="max-width:200px"><label>Filtrar</label><select id="n-fil" onchange="renderNormas()"><option value="">Todas</option><option value="manutencao_cnc">Manutenção CNC</option><option value="qualidade">Qualidade</option><option value="seguranca">Segurança</option><option value="producao">Produção</option><option value="fresas">Fresas</option><option value="material">Material</option><option value="outro">Outro</option></select></div></div>
+        <div id="n-lst"></div>
+      </div>
+    </div>
+
+    <div id="view-notas" class="view">
+      <div class="card">
+        <div class="card-t">💡 Notas Técnicas da Empresa</div>
+        <p style="font-size:13px;color:var(--mt);margin-bottom:12px">Referência rápida dos padrões técnicos. Consulte quando tiver dúvida em algum item do checklist.</p>
+        <input type="text" id="nota-srch" placeholder="🔍 Buscar nas notas técnicas..." oninput="filterNotas()" style="width:100%;border:1px solid var(--br);border-radius:6px;padding:8px 12px;font-size:13px;margin-bottom:14px;outline:none">
+        <div id="notas-ct"></div>
+      </div>
+    </div>
+
+    <div id="view-sync" class="view">
+      <div class="card">
+        <div class="card-t">☁️ Sincronização com Google Drive</div>
+        <p style="font-size:13px;color:var(--mt);margin-bottom:14px">Mantenha os dados deste sistema acessíveis em qualquer dispositivo, guardando uma cópia no seu Google Drive. A sincronização é feita por um arquivo (<code>ppcp_sync_dados.json</code>) que só este sistema acessa.</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <span id="sync-dot" style="width:11px;height:11px;border-radius:50%;background:#ccc;display:inline-block;flex-shrink:0"></span>
+          <span id="sync-statustxt" style="font-weight:600;font-size:14px">Desconectado</span>
+        </div>
+        <p id="sync-info" style="font-size:12px;color:var(--mt);margin-bottom:14px;min-height:16px"></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn bp" id="sync-connbtn" onclick="gdConnect()">🔐 Conectar ao Google Drive</button>
+          <button class="btn bok" id="sync-nowbtn" style="display:none" onclick="gdSyncNow()">🔄 Sincronizar agora</button>
+          <button class="btn bg" id="sync-offbtn" style="display:none" onclick="gdDisconnect()">🔌 Desconectar</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-t">ℹ️ Como funciona</div>
+        <p style="font-size:13px;color:var(--mt);line-height:1.7">
+          • Ao conectar pela primeira vez, o Google vai pedir permissão para este sistema acessar apenas os arquivos que ele mesmo cria — nada mais do seu Drive é acessado.<br>
+          • Sempre que o sistema é aberto e está conectado, ele verifica se existe uma versão mais nova no Drive e baixa automaticamente (se você não tiver alterações pendentes aqui).<br>
+          • Use o botão <b>Sincronizar agora</b> para enviar as alterações feitas neste dispositivo quando quiser.<br>
+          • Se houver alterações neste dispositivo <i>e</i> no Drive ao mesmo tempo, o sistema mostra um aviso e deixa você escolher qual versão manter — nada é sobrescrito sem confirmação.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="mo" id="mo-conf"><div class="md"><h3 id="mc-t">Confirmação</h3><p id="mc-m" style="font-size:13px;color:var(--mt)"></p><div class="mdf"><button class="btn bg" onclick="cmo('mo-conf')">Cancelar</button><button class="btn bdn" id="mc-b">Confirmar</button></div></div></div>
+
+<div class="mo" id="mo-fr"><div class="md"><h3>✏️ Editar Fresa</h3><input type="hidden" id="ef-id">
+  <div class="fr"><div class="fg" style="max-width:95px"><label>Posição</label><select id="ef-pos"><option value="">—</option><option>T1</option><option>T2</option><option>T3</option><option>T4</option><option>T5</option><option>T6</option><option>T7</option><option>T8</option><option>T9</option><option>T21</option><option>T22</option><option>T23</option><option>T24</option><option>T25</option><option>T26</option><option>T27</option><option>T28</option><option>T29</option><option value="livre">Livre</option></select></div><div class="fg"><label>Nome</label><input type="text" id="ef-nom"></div></div>
+  <div class="fr"><div class="fg" style="max-width:100px"><label>Diâm.</label><input type="number" id="ef-dia" step="0.1"></div><div class="fg" style="max-width:110px"><label>Compr.</label><input type="number" id="ef-comp" step="0.1"></div><div class="fg" style="max-width:90px"><label>Dentes</label><input type="number" id="ef-den"></div><div class="fg" style="max-width:110px"><label>RPM</label><input type="number" id="ef-rpm" step="500"></div><div class="fg" style="max-width:110px"><label>Avanço F</label><input type="number" id="ef-ava" step="100"></div><div class="fg" style="max-width:95px"><label>AP</label><input type="number" id="ef-ap" step="0.5"></div></div>
+  <div class="fr"><div class="fg"><label>Uso</label><input type="text" id="ef-uso"></div><div class="fg" style="max-width:140px"><label>Estado</label><select id="ef-est"><option value="ok">✅ OK</option><option value="desgaste">⚠️ Desgaste</option><option value="troca">❌ Trocar</option><option value="ausente">🚫 Ausente</option></select></div></div>
+  <div class="fr"><div class="fg"><label>Obs</label><input type="text" id="ef-obs"></div></div>
+  <div class="mdf"><button class="btn bg" onclick="cmo('mo-fr')">Cancelar</button><button class="btn bp" onclick="saveEF()">Salvar</button></div>
+</div></div>
+
+<div class="mo" id="mo-syncconf"><div class="md">
+  <h3>⚠️ Conflito de sincronização</h3>
+  <p style="font-size:13px;color:var(--mt);margin:10px 0">Existem alterações neste dispositivo <b>e</b> no Google Drive desde a última sincronização. Escolha qual versão manter — a outra será substituída (sem possibilidade de desfazer).</p>
+  <div style="font-size:13px;background:#f8f9fb;border:1px solid var(--br);border-radius:8px;padding:10px 12px;margin-bottom:6px">
+    <div>📱 Última alteração neste dispositivo: <b id="sc-local">—</b></div>
+    <div>☁️ Última alteração no Google Drive: <b id="sc-remote">—</b></div>
+  </div>
+  <div class="mdf" style="flex-wrap:wrap">
+    <button class="btn bg" onclick="cmo('mo-syncconf')">Cancelar</button>
+    <button class="btn ba" onclick="gdResolveConflict('remote')">☁️ Usar versão do Drive</button>
+    <button class="btn bp" onclick="gdResolveConflict('local')">📱 Manter deste dispositivo</button>
+  </div>
+</div></div>
+
+<div class="mo" id="mo-st"><div class="md"><h3>Alterar Status</h3><input type="hidden" id="es-id">
+  <div class="fg" style="margin-bottom:14px"><label>Status do ambiente</label>
+    <select id="es-st" style="border:1px solid var(--br);border-radius:6px;padding:8px 10px;font-size:13px;width:100%">
+      <option value="1">1. Recebido</option><option value="2">2. Em projeto comercial</option>
+      <option value="3">3. Aguardando aprovação</option><option value="4">4. Aprovado — iniciando engenharia</option>
+      <option value="5">5. Em engenharia executiva</option><option value="6">6. Em revisão técnica</option>
+      <option value="7">7. Liberado para PCP</option><option value="8">8. Em produção</option>
+      <option value="9">9. Em montagem</option><option value="10">10. Entregue ✓</option>
+    </select>
+  </div>
+  <div class="mdf"><button class="btn bg" onclick="cmo('mo-st')">Cancelar</button><button class="btn bp" onclick="saveST()">Salvar</button></div>
+</div></div>
+
+<div id="toast"></div>
+<input type="file" id="imp-in" accept=".json" style="display:none" onchange="procImp(event)">
+
+<script>
+const STS={'1':{l:'Recebido',c:'s1',f:'f1'},'2':{l:'Em proj. comercial',c:'s2',f:'f1'},'3':{l:'Aguard. aprovação',c:'s3',f:'f1'},'4':{l:'Aprovado',c:'s4',f:'f2'},'5':{l:'Em engenharia',c:'s5',f:'f2'},'6':{l:'Revisão técnica',c:'s6',f:'f2'},'7':{l:'Liberado PCP',c:'s7',f:'f3'},'8':{l:'Em produção',c:'s8',f:'f3'},'9':{l:'Em montagem',c:'s9',f:'f3'},'10':{l:'Entregue ✓',c:'s10',f:'done'}};
+const TIPOS=[{id:'cozinha',ico:'🍳',nome:'Cozinha'},{id:'dormitorio',ico:'🛏️',nome:'Dormitório'},{id:'banheiro',ico:'🚿',nome:'Banheiro'},{id:'homeoffice',ico:'💼',nome:'Home Office'},{id:'closet',ico:'👗',nome:'Closet'},{id:'sala',ico:'🛋️',nome:'Sala/TV'},{id:'areaservico',ico:'🧺',nome:'Área Serviço'},{id:'varanda',ico:'🌿',nome:'Varanda'},{id:'outro',ico:'📦',nome:'Outro'}];
+const GD=[
+{id:'g_rec',nome:'1. Recebimento e Análise',cor:'#1565c0',fase:'f1',itens:[{id:'r1',t:'Contrato recebido e conferido',tag:'critico'},{id:'r2',t:'Briefing do cliente revisado',tag:'critico'},{id:'r3',t:'Projeto arquitetônico recebido (PDF/DWG)',tag:'critico'},{id:'r4',t:'Imagens de referência coletadas',tag:'normal'},{id:'r5',t:'Grupo de comunicação criado com o cliente',tag:'normal'},{id:'r6',t:'Cronograma inicial definido',tag:'critico'},{id:'r7',t:'Valor contratado e escopo dos ambientes confirmados',tag:'critico'},{id:'r8',t:'Registrar decisões iniciais no sistema',tag:'auto'}]},
+{id:'g_lev',nome:'2. Levantamento Técnico — Medida Fina',cor:'#0277bd',fase:'f1',itens:[{id:'l1',t:'Largura e altura de todas as paredes',tag:'critico'},{id:'l2',t:'Pé direito confirmado',tag:'critico'},{id:'l3',t:'Piso acabado — descontar na altura total',tag:'aviso',n:'Ambientes com piso: a altura real é menor que o pé direito bruto. Descontar espessura do revestimento + argamassa antes de modelar.'},{id:'l4',t:'Desníveis e esquadros mapeados',tag:'critico'},{id:'l5',t:'Teto, gesso, vigas e pilares registrados',tag:'critico'},{id:'l6',t:'Janelas, portas e esquadrias com folgas corretas',tag:'critico'},{id:'l7',t:'Interferências: tubulações, caixas, pontos elétricos',tag:'critico'},{id:'l8',t:'Fotos do local tiradas e salvas na pasta',tag:'normal'},{id:'l9',t:'Salvar como PAREDES_Ambiente_Cliente.skp',tag:'critico'},{id:'l10',t:'⚠️ ARQUIVO BASE — NÃO ALTERAR APÓS ESTE PONTO',tag:'aviso'}]},
+{id:'g_3dc',nome:'3. Projeto 3D Comercial',cor:'#01579b',fase:'f1',itens:[{id:'c1',t:'Layout dos ambientes definido conforme projeto do arquiteto',tag:'critico'},{id:'c2',t:'Distribuição dos módulos validada',tag:'critico'},{id:'c3',t:'Ergonomia básica verificada (alturas, circulação)',tag:'critico'},{id:'c4',t:'Composição visual e estética validada',tag:'normal'},{id:'c5',t:'Medidas totais e alinhamentos conferidos',tag:'critico'},{id:'c6',t:'Módulos nomeados corretamente',tag:'normal',n:'No DinaBox, nomear cada módulo facilita rastreabilidade na produção e no almoxarifado.'},{id:'c7',t:'Cenas criadas no projeto para melhor detalhamento',tag:'normal'},{id:'c8',t:'NÃO detalhar CNC, ferragens especiais ou passagens técnicas nesta fase',tag:'aviso'}]},
+{id:'g_rvc',nome:'4. Revisão Comercial',cor:'#283593',fase:'f1',itens:[{id:'rc1',t:'Medidas gerais conferidas',tag:'critico'},{id:'rc2',t:'Layout corresponde ao briefing e projeto do arquiteto',tag:'critico'},{id:'rc3',t:'Orçamento compatível com o contratado',tag:'critico'},{id:'rc4',t:'Todos os ambientes do escopo contemplados',tag:'critico'}]},
+{id:'g_apc',nome:'5. Aprovação do Cliente',cor:'#1a237e',fase:'f1',itens:[{id:'ac1',t:'Perspectivas e vistas gerais geradas para apresentação',tag:'critico'},{id:'ac2',t:'Materiais e acabamentos principais apresentados',tag:'critico'},{id:'ac3',t:'Medidas totais apresentadas',tag:'normal'},{id:'ac4',t:'Aprovação registrada (e-mail, WhatsApp ou assinatura)',tag:'critico'},{id:'ac5',t:'Data de aprovação registrada no sistema',tag:'critico'},{id:'ac6',t:'Salvar como PT_Ambiente_Cliente_V01_data.skp',tag:'critico'}]},
+{id:'g_pos',nome:'6. Posicionamento e Afastamentos',cor:'#4a148c',fase:'f2',itens:[{id:'p1',t:'Afastamento lateral da parede correto',tag:'critico'},{id:'p2',t:'Afastamento do fundo correto',tag:'critico'},{id:'p3',t:'Folga superior para nivelamento',tag:'critico'},{id:'p4',t:'Folga entre módulos: 2–3mm padrão',tag:'critico'},{id:'p5',t:'Abertura de portas sem interferências',tag:'critico'},{id:'p6',t:'Abertura de gavetas sem interferências',tag:'critico'},{id:'p7',t:'Distâncias para eletrodomésticos verificadas',tag:'critico'},{id:'p8',t:'Afastamento superior de painéis = apenas 5mm',tag:'padrao',n:'Padrão JM: espaço entre topo do painel e elemento superior = sempre 5mm.'},{id:'p9',t:'Roupeiros: afastar 1–2cm da parede lateral',tag:'padrao',n:'Não encostar direto na parede. 1 a 2cm para facilitar montagem e acomodar imperfeições.'},{id:'p10',t:'Pingadeiras: lateral 5mm / frente 30mm',tag:'padrao'},{id:'p11',t:'Vistas laterais fechadas em cima e embaixo',tag:'padrao'}]},
+{id:'g_pg',nome:'7. Portas e Gavetas',cor:'#6a1b9a',fase:'f2',itens:[{id:'pg1',t:'Folga geral de portas: 3mm por lado',tag:'critico'},{id:'pg2',t:'Folga no topo: 1cm quando pedra/área molhada / 3mm demais',tag:'critico',n:'Com pedra natural ou área molhada: folga superior da porta = 1cm. Evita atrito por expansão.'},{id:'pg3',t:'Folga inferior das portas conferida',tag:'normal'},{id:'pg4',t:'Folga entre portas duplas no centro',tag:'critico'},{id:'pg5',t:'Tipo de dobradiça: Alta, Curva, Gafanhoto ou Canto Reto',tag:'critico',n:'Alta=porta comum. Curva=interferência lateral. Gafanhoto=porta pesada/grande. Canto Reto=porta abre 90° contra superfície — divisória invisível obrigatória.'},{id:'pg6',t:'Canto Reto → divisória invisível obrigatória',tag:'padrao',n:'Dobradiça Canto Reto: incluir divisória invisível no módulo para porta não colidir ao abrir.'},{id:'pg7',t:'Espessura do corpo da gaveta: sempre 15mm',tag:'critico',n:'Padrão fixo. Laterais da gaveta = 15mm. Corrediça é calibrada para esta espessura.'},{id:'pg8',t:'Gavetas com frente acima de 15cm → recuo superior +5cm',tag:'padrao',n:'Frente acima de 15cm: recuo superior +5cm em relação ao padrão. Evita interior aparecer ao abrir.'},{id:'pg9',t:'Duas primeiras gavetas do guarda-roupa → divisão de MDF',tag:'padrao'},{id:'pg10',t:'Gaveta oculta em cima do módulo da lixeira (cozinha)',tag:'padrao',n:'Padrão cozinha JM: gaveta oculta acima do módulo de lixeira embutida.'},{id:'pg11',t:'Gaveta Blum quando perfil for Cava — exceto gaveta metálica',tag:'padrao',n:'Puxador Cava = gavetas obrigatoriamente sistema Blum.'},{id:'pg12',t:'Porta basculante: prateleira 15,5mm / área molhada Ultra / somente puxador cava fixa',tag:'padrao',n:'Basculante: 1)Prateleira dobradiça=15,5mm. 2)Área molhada=Ultra nessa prateleira. 3)Somente puxador cava fixa.'},{id:'pg13',t:'Sensor de porta: 5cm do final da porta',tag:'padrao',n:'Sensor de LED posicionado a 5cm da borda de fechamento da porta.'},{id:'pg14',t:'Altura mínima da penteadeira: 600mm',tag:'padrao'},{id:'pg15',t:'Cabide: máx. 2.100mm chão / 1,05m livre superior / 80cm inferior',tag:'padrao'},{id:'pg16',t:'Conferir se dobradiças não estão pegando nas prateleiras',tag:'critico'},{id:'pg17',t:'Conferir alturas de prateleiras e gavetas conforme projeto',tag:'critico'}]},
+{id:'g_mat',nome:'8. Materiais e Acabamentos',cor:'#880e4f',fase:'f2',itens:[{id:'m1',t:'Material do corpo correto (cor, espessura, fabricante)',tag:'critico'},{id:'m2',t:'Material das frentes correto',tag:'critico'},{id:'m3',t:'Fita de borda dos topos igual à porta',tag:'critico'},{id:'m4',t:'Topos encostados em paredes/chão → laminados (exceto vistas)',tag:'critico'},{id:'m5',t:'Fita de borda definida por face de cada peça',tag:'critico'},{id:'m6',t:'MDF Ultra em áreas molhadas e tulha — recuar 10cm inf. e sup.',tag:'padrao',n:'Ultra obrigatório: sob pia, lava-louça, cuba, banheiro, sacada, lavanderia e tulha. Recuar 10cm na base e 10cm no topo.'},{id:'m7',t:'Módulo SEM FUNDO quando houver pedra no ambiente',tag:'padrao',n:'Com pedra natural (granito, mármore, quartzito): módulo abaixo sem fundo. Pedra assenta na estrutura lateral.'},{id:'m8',t:'Fundos divididos para transporte — máximo 1.100mm',tag:'padrao',n:'Fundos maiores que 1.100mm: dividir em 2+ peças para transporte e montagem.'},{id:'m9',t:'Módulo solto → peça de acabamento no fundo',tag:'padrao'},{id:'m10',t:'Painéis ao chão → geometria 1cm para indicar madeira maciça',tag:'padrao',n:'No SketchUp/DinaBox: painéis ao chão recebem geometria 1cm na base — indica ao marceneiro madeira maciça nessa região.'},{id:'m11',t:'Negativos de painéis → geometria 6mm entre painéis',tag:'padrao',n:'Para negativo visual: geometria 6mm no DinaBox — instrui colocar peça de 6mm para o recuo visual.'},{id:'m12',t:'Ripado → respeitar largura da RIPA, não do vão',tag:'padrao',n:'Sempre dimensionar pela largura da ripa (a peça física), não pelo vão entre ripas.'},{id:'m13',t:'Painéis com junta seca → remover fita nas laterais de contato',tag:'padrao',n:'Junta seca: faces que se tocam SEM fita. Quando for negativo: manter fitas.'},{id:'m14',t:'Acabamento posterior → +7mm recuos / apagar fundo mira vermelha / espessura 15,5mm',tag:'padrao',n:'Fundo visível: 1)Recuos +7mm. 2)Apagar fundo na mira vermelha DinaBox. 3)Espessura do fundo = 15,5mm.'},{id:'m15',t:'Tirar margem de acabamento de painéis e adicionar em peças dupladas',tag:'critico'},{id:'m16',t:'Conferir peças dupladas com fitas certas na listagem',tag:'critico'},{id:'m17',t:'Prateleiras aéreo banheiro: 18,5mm',tag:'padrao'},{id:'m18',t:'Prateleiras demais aéreos: 25,5mm',tag:'padrao'}]},
+{id:'g_fer',nome:'9. Ferragens',cor:'#bf360c',fase:'f2',itens:[{id:'fe1',t:'Dobradiça correta (modelo e abertura)',tag:'critico'},{id:'fe2',t:'Corrediça correta (curso e modelo)',tag:'critico'},{id:'fe3',t:'Puxador definido (modelo e acabamento)',tag:'critico'},{id:'fe4',t:'Ferragens de sustentação conferidas',tag:'critico'},{id:'fe5',t:'Ferragens decorativas conferidas',tag:'normal'},{id:'fe6',t:'Fixação com imã nos fundos removíveis',tag:'padrao'},{id:'fe7',t:'Articulador para baú → mínimo 20cm de altura interna',tag:'padrao',n:'Tampa articulada: articulador exige altura interna mínima de 20cm para funcionar sem travar.'},{id:'fe8',t:'Sistema 4 plus → topo obrigatoriamente 25mm',tag:'padrao',n:'Sistema 4 plus (fixação sem parafuso aparente): tampo OBRIGATORIAMENTE 25mm. Aprovado pelo Jair.'},{id:'fe9',t:'Cristaleira → caixa toda em 25mm',tag:'padrao',n:'Módulos de cristaleira: caixa inteira em MDF 25mm para rigidez com porta de vidro. Aprovado pelo Jair.'},{id:'fe10',t:'Perfil cava fixa → usinagem e peças de fixação previstas',tag:'padrao',n:'Perfil Cava Fixa: 1)Usinagem específica no MDF. 2)Peças de fixação. 3)Gavetas Blum. Verificar antes de liberar.'},{id:'fe11',t:'Conferir espelho — medidas e responsável pelo pedido',tag:'critico'},{id:'fe12',t:'Confirmar dobradiça e fechadura em portas de giro',tag:'critico'},{id:'fe13',t:'Confirmar quantidade e cor dos puxadores',tag:'critico'},{id:'fe14',t:'Prateleiras shelfix aparentes → trocar e marcar NÃO UTILIZAR',tag:'padrao',n:'Prateleiras visíveis ao cliente: não usar shelfix padrão. Substituir por suporte adequado e marcar NÃO UTILIZAR no DinaBox.'}]},
+{id:'g_ins',nome:'10. Instalações e Infraestrutura',cor:'#e65100',fase:'f2',itens:[{id:'i1',t:'Pontos elétricos mapeados (tomada, interruptor, luminária)',tag:'critico'},{id:'i2',t:'Pontos hidráulicos mapeados (água, esgoto)',tag:'critico'},{id:'i3',t:'Ponto de gás mapeado',tag:'critico'},{id:'i4',t:'Coifa, ar-condicionado e eletros especiais verificados',tag:'critico'},{id:'i5',t:'Pass-fio previsto e dimensionado',tag:'normal'},{id:'i6',t:'Tomadas embutidas no móvel previstas',tag:'normal'},{id:'i7',t:'Interruptores embutidos previstos',tag:'normal'},{id:'i8',t:'Recorte de hidráulica nas travessas do fogão e da pia',tag:'critico'},{id:'i9',t:'Canal para LED planejado (posição e entrada de fio)',tag:'normal'},{id:'i10',t:'Reatores e sensores quando LED interno — local previsto',tag:'padrao',n:'LED interno: prever local físico para reator e sensor. Caixa no topo, nicho lateral ou compartimento.'},{id:'i11',t:'LED interno: fita fora da lateral / difusores somente nos vãos',tag:'padrao',n:'Fita de LED na parte EXTERNA da lateral. Difusores somente nos vãos de abertura.'},{id:'i12',t:'Difusores: recuados 12cm da frente / 15cm quando colidem',tag:'padrao',n:'12cm da frente. Quando risco de colisão com prateleiras/gavetas: recuar para 15cm.'},{id:'i13',t:'Sensores de porta: 5cm do final da porta',tag:'padrao'},{id:'i14',t:'Passagens de cabo com folga para instalação e manutenção',tag:'critico'}]},
+{id:'g_cnc',nome:'11. Usinagens CNC',cor:'#1b5e20',fase:'f2',itens:[{id:'cn1',t:'Verificar fresas: desbaste (diâmetro e comprimento)',tag:'critico'},{id:'cn2',t:'Verificar fresas: acabamento',tag:'critico'},{id:'cn3',t:'Verificar fresas: Forstner 35mm (dobradiça)',tag:'critico'},{id:'cn4',t:'Verificar fresas: corrediça undermount',tag:'critico'},{id:'cn5',t:'Configurar furação dobradiças (padrão Blum — 37mm da borda)',tag:'critico'},{id:'cn6',t:'Configurar furação corrediças',tag:'critico'},{id:'cn7',t:'Configurar rebaixo para fundo de gaveta',tag:'critico'},{id:'cn8',t:'Usinagem para perfil de alumínio (cava fixa)',tag:'normal'},{id:'cn9',t:'Usinagem para LED (canal, entrada de fio, difusor)',tag:'normal'},{id:'cn10',t:'Usinagem para tomada / interruptor embutido',tag:'normal'},{id:'cn11',t:'Verificar profundidade de cada usinagem vs espessura do painel',tag:'critico'},{id:'cn12',t:'Verificar distâncias mínimas da borda no centro de furação',tag:'critico'},{id:'cn13',t:'Canal de fundo: posição e profundidade corretos',tag:'critico'},{id:'cn14',t:'Furos de dobradiça posicionados corretamente',tag:'critico'}]},
+{id:'g_nt',nome:'12. Notas Técnicas Aplicadas',cor:'#37474f',fase:'f2',itens:[{id:'nt1',t:'Todos os padrões da empresa verificados neste projeto',tag:'padrao'},{id:'nt2',t:'Consultar aba Notas Técnicas para itens com dúvida',tag:'normal'},{id:'nt3',t:'Padrões específicos do tipo de ambiente verificados',tag:'padrao'}]},
+{id:'g_rv',nome:'13. Revisão Técnica Final',cor:'#4e342e',fase:'f2',itens:[{id:'rv1',t:'Medidas gerais compatíveis com o levantamento',tag:'critico'},{id:'rv2',t:'Todas as ferragens definidas e compatíveis',tag:'critico'},{id:'rv3',t:'Materiais e espessuras corretos em todas as peças',tag:'critico'},{id:'rv4',t:'Usinagens e furações sem conflito',tag:'critico'},{id:'rv5',t:'Instalações compatibilizadas com o projeto',tag:'critico'},{id:'rv6',t:'Folga de montagem entre módulos: 2–3mm',tag:'critico'},{id:'rv7',t:'Folga superior armários (nivelamento)',tag:'critico'},{id:'rv8',t:'Alinhamento visual de frentes conferido',tag:'normal'},{id:'rv9',t:'Todas as peças cabem na chapa padrão (2750×1830)',tag:'critico'},{id:'rv10',t:'Peças maiores que a chapa → emenda verificada',tag:'critico'},{id:'rv11',t:'Espessuras: corpo 15/18mm, fundo 6/9mm confirmadas',tag:'critico'},{id:'rv12',t:'Pé regulável ou rodapé definido',tag:'normal'}]},
+{id:'g_cf',nome:'14. Conferência de Projeto',cor:'#212121',fase:'f2',itens:[{id:'cf1',t:'Status Rascunho: confirmar sem valores zerados',tag:'critico'},{id:'cf2',t:'Exportar e verificar aproveitamento de chapa',tag:'critico'},{id:'cf3',t:'Confirmar quantidade e cor dos puxadores',tag:'critico'},{id:'cf4',t:'Conferir pedido de espelho — medidas e responsável',tag:'critico'},{id:'cf5',t:'Confirmar dobradiça e fechadura de portas de giro',tag:'critico'},{id:'cf6',t:'Divisor de talher: 1ª gaveta / divisórias MDF na 2ª',tag:'padrao'},{id:'cf7',t:'Pasta completa: CheckList, Eletros, Projeto, Planta, Fotos, Histórico',tag:'critico'},{id:'cf8',t:'Data de aprovação e liberação registradas',tag:'critico'},{id:'cf9',t:'Versão do projeto atualizada (V01, V02...)',tag:'critico'},{id:'cf10',t:'Agrupar e nomear peças soltas (vistas, rodateto, rodapé, painel)',tag:'critico'}]},
+{id:'g_exp',nome:'15. Exportação DinaBox',cor:'#006064',fase:'f3',itens:[{id:'ex1',t:'Gerar lista de materiais pelo DinaBox',tag:'critico'},{id:'ex2',t:'Verificar e ajustar lista de materiais',tag:'critico'},{id:'ex3',t:'Gerar relação de corte',tag:'critico'},{id:'ex4',t:'Gerar arquivo de usinagem (.nc) para CNC Alca',tag:'critico'},{id:'ex5',t:'Verificar arquivo .nc contra lista de fresas disponíveis',tag:'critico'},{id:'ex6',t:'Exportar CutPlanning → lote → tampos → etiquetas → PDF na pasta',tag:'critico'},{id:'ex7',t:'Salvar como PT_Ambiente_Cliente_V01_data.skp',tag:'critico'}]},
+{id:'g_ppcp',nome:'16. PPCP — Planejamento e Controle',cor:'#01579b',fase:'f3',itens:[{id:'pp1',t:'Pedido Almoxarifado: gerar → exportar → desmarcar MDF → ajustar nome/lote',tag:'critico',n:'DinaBox: Lista de Compras → Exportar → desmarcar MDF → ajustar nome do cliente e número do lote.'},{id:'pp2',t:'Imprimir etiquetas de peças dupladas → colocar na pasta',tag:'critico',n:'Peças em duplicata: etiquetas impressas e fixadas na pasta para controle na produção.'},{id:'pp3',t:'Gerar planilha de corte e exportar para CutPlanning',tag:'critico'},{id:'pp4',t:'Gerar pedido de MDF pelo CutPlanning',tag:'critico'},{id:'pp5',t:'Pedir lâmina para peças engrossadas',tag:'critico'},{id:'pp6',t:'Recortes de hidráulica → somar e pedir fita manualmente',tag:'aviso',n:'Fita dos recortes hidráulicos não é gerada automaticamente. Somar o comprimento e pedir manual.'},{id:'pp7',t:'Pedir fitas dos puxadores Cava com fita',tag:'critico'},{id:'pp8',t:'Pedir ferragem do projeto (Metalon) — quantidade confirmada',tag:'critico'},{id:'pp9',t:'Pedido almoxarifado: incluir desempenador, palha, fita larga, espelhos, puxadores avulsos',tag:'critico'},{id:'pp10',t:'Etiquetas de duplagem → imprimir e colocar na pasta',tag:'critico'},{id:'pp11',t:'Verificar posição correta dos puxadores no pedido',tag:'critico'},{id:'pp12',t:'Pedido portas de alumínio',tag:'critico'},{id:'pp13',t:'Enviar pedido a Compras',tag:'critico'},{id:'pp14',t:'Exportar furação',tag:'critico'},{id:'pp15',t:'MDF Ultra nas áreas molhadas e tulha — confirmado no pedido',tag:'padrao'}]},
+{id:'g_lib',nome:'17. Liberação para PCP',cor:'#1b5e20',fase:'f3',itens:[{id:'lb1',t:'Aprovação do cliente confirmada ✓',tag:'critico'},{id:'lb2',t:'Aprovação do arquiteto confirmada ✓ (se houver)',tag:'normal'},{id:'lb3',t:'Arquivo .nc gerado e validado ✓',tag:'critico'},{id:'lb4',t:'Lista de materiais final confirmada ✓',tag:'critico'},{id:'lb5',t:'Pedido almoxarifado gerado ✓',tag:'critico'},{id:'lb6',t:'Pedidos de compra enviados ✓',tag:'critico'},{id:'lb7',t:'Data de liberação registrada no sistema',tag:'critico'},{id:'lb8',t:'Alterar status do ambiente para Liberado PCP',tag:'critico'}]}
+];
+const TBD={
+cozinha:[{id:'cz_e',nome:'🍳 Específico — Cozinha',cor:'#bf360c',fase:'f2',scope:'cozinha',itens:[{id:'cz1',t:'Folga cooktop (lateral e superior)',tag:'critico'},{id:'cz2',t:'Folga forno (ventilação obrigatória)',tag:'critico'},{id:'cz3',t:'Folga geladeira (circulação de ar)',tag:'critico'},{id:'cz4',t:'Lava-louça (entrada de água e esgoto)',tag:'critico'},{id:'cz5',t:'Micro-ondas (vão e ventilação)',tag:'normal'},{id:'cz6',t:'Corpo da gaveta em ferragem — nunca MDF',tag:'padrao',n:'Padrão JM cozinha: corpo da gaveta sempre em ferragem (sistema Blum ou similar).'},{id:'cz7',t:'Temperatura do LED: 3000K',tag:'padrao'},{id:'cz8',t:'Bancada: 400mm eixo do vaso ou 200mm da extremidade',tag:'padrao',n:'Padrão JM: 400mm do eixo do vaso ou 200mm da extremidade — o que vier primeiro. Projeto com 300mm está fora do padrão.'},{id:'cz9',t:'Corrediça da tulha — corpo 10cm da base',tag:'padrao'},{id:'cz10',t:'Tulha próxima do ponto de água: mínimo 300mm',tag:'aviso'},{id:'cz11',t:'Recorte de hidráulica nas travessas do fogão e da pia',tag:'critico'},{id:'cz12',t:'Gaveta oculta em cima do módulo da lixeira',tag:'padrao'}]}],
+dormitorio:[{id:'do_e',nome:'🛏️ Específico — Dormitório',cor:'#1565c0',fase:'f2',scope:'dormitorio',itens:[{id:'do1',t:'Cabideiro na posição e altura corretos',tag:'critico'},{id:'do2',t:'Espelho embutido previsto (se houver)',tag:'normal'},{id:'do3',t:'Iluminação interna prevista',tag:'normal'},{id:'do4',t:'Porta com espelho: branco ártico = 12,5mm / demais = 15,5mm',tag:'padrao',n:'Espessura porta com espelho: interno Branco Ártico = 12,5mm. Todos os outros materiais = 15,5mm.'},{id:'do5',t:'Porta com espelho alinhada com o ambiente',tag:'padrao'},{id:'do6',t:'Divisão de MDF nas duas primeiras gavetas',tag:'padrao'}]}],
+banheiro:[{id:'bh_e',nome:'🚿 Específico — Banheiro',cor:'#00695c',fase:'f2',scope:'banheiro',itens:[{id:'bh1',t:'Bancada: 400mm eixo do vaso ou 200mm da extremidade',tag:'padrao'},{id:'bh2',t:'Profundidade da bancada confere com o projeto',tag:'critico'},{id:'bh3',t:'Ponto hidráulico mapeado (água e esgoto)',tag:'critico'},{id:'bh4',t:'Porta com espelho: branco ártico = 12,5mm / demais = 15,5mm',tag:'padrao'},{id:'bh5',t:'Porta com espelho alinhada com cuba, pedra e lateral',tag:'padrao'},{id:'bh6',t:'Prateleiras em banheiro = 18,5mm',tag:'padrao'},{id:'bh7',t:'Tamponamento lateral de aéreos NÃO existe neste ambiente',tag:'padrao'},{id:'bh8',t:'Material Ultra nas áreas molhadas',tag:'padrao'},{id:'bh9',t:'Temperatura LED: 3000K',tag:'padrao'},{id:'bh10',t:'Frente fixa onde vai LED = 50mm',tag:'padrao'},{id:'bh11',t:'LED recuado 20mm das extremidades verticais',tag:'padrao'},{id:'bh12',t:'Altura do aéreo igual ao projeto (ajustar para passagem de fio)',tag:'aviso'},{id:'bh13',t:'Módulo SEM FUNDO quando houver pedra',tag:'padrao'}]}],
+homeoffice:[{id:'ho_e',nome:'💼 Específico — Home Office',cor:'#37474f',fase:'f2',scope:'homeoffice',itens:[{id:'ho1',t:'Altura da mesa de trabalho: 70–75cm',tag:'critico'},{id:'ho2',t:'Passagem de cabos (internet, HDMI, energia)',tag:'critico'},{id:'ho3',t:'Tomadas acessíveis no móvel',tag:'critico'}]}],
+closet:[{id:'cl_e',nome:'👗 Específico — Closet',cor:'#880e4f',fase:'f2',scope:'closet',itens:[{id:'cl1',t:'Cabideiro na altura correta',tag:'critico'},{id:'cl2',t:'Iluminação interna prevista',tag:'normal'},{id:'cl3',t:'Gavetas de roupa com profundidade correta',tag:'critico'},{id:'cl4',t:'Divisão nas duas primeiras gavetas',tag:'padrao'}]}],
+sala:[{id:'sl_e',nome:'🛋️ Específico — Sala',cor:'#4a148c',fase:'f2',scope:'sala',itens:[{id:'sl1',t:'Passagem HDMI / cabo de TV prevista',tag:'normal'},{id:'sl2',t:'Painel de TV com suporte previsto',tag:'normal'},{id:'sl3',t:'Iluminação de destaque planejada',tag:'normal'}]}],
+areaservico:[{id:'as_e',nome:'🧺 Específico — Área Serviço',cor:'#4e342e',fase:'f2',scope:'areaservico',itens:[{id:'as1',t:'Ponto hidráulico mapeado',tag:'critico'},{id:'as2',t:'Tomada para máquina de lavar posicionada',tag:'critico'}]}],
+varanda:[],outro:[]
+};
+const NTS=[
+{cat:'🔩 Dobradiças',itens:[{t:'Dobradiça Alta',d:'Para portas comuns sem obstáculos. Modelo padrão para armários e guarda-roupas em condições normais.'},{t:'Dobradiça Curva',d:'Quando há interferência próxima à abertura — obstáculo lateral. O braço curvo permite raio de abertura diferente do padrão.'},{t:'Dobradiça Gafanhoto',d:'Portas pesadas ou de grandes dimensões. Suporta mais peso e oferece maior estabilidade.'},{t:'Dobradiça Canto Reto',d:'Porta abre 90° contra outra superfície. OBRIGATÓRIO: incluir divisória invisível no módulo para a porta não colidir ao abrir completamente.'},{t:'Dobradiça Basculante',d:'Portas que abrem para cima (portinholas, aéreos). Prateleira da dobradiça = 15,5mm. Área molhada = Ultra nessa prateleira. Somente puxador cava fixa.'}]},
+{cat:'📦 Gavetas',itens:[{t:'Espessura padrão: 15mm',d:'Laterais do corpo da gaveta sempre 15mm. Nunca 18mm. O sistema de corrediça Blum é calibrado para esta espessura.'},{t:'Recuo superior em gavetas altas',d:'Frente acima de 15cm: recuo superior +5cm em relação ao padrão. Evita que o interior da gaveta apareça ao abrir.'},{t:'Gaveta Blum com perfil Cava',d:'Puxador perfil Cava = gavetas obrigatoriamente sistema Blum. Exceção: gavetas já metálicas por natureza.'},{t:'Divisão nas primeiras gavetas do roupeiro',d:'As duas primeiras gavetas do guarda-roupa (de cima para baixo) recebem divisória de MDF interna.'},{t:'Gaveta oculta sobre a lixeira',d:'Todo módulo de lixeira embutida em cozinha deve ter gaveta oculta acima. Espaço aproveitado.'},{t:'Sensor de porta: 5cm do final',d:'Sensor de LED posicionado a 5cm da borda de fechamento da porta. Garante acionamento correto.'}]},
+{cat:'🎨 Material e Acabamento',itens:[{t:'MDF Ultra — áreas molhadas e tulha',d:'Obrigatório em: sob pia, lava-louça, cuba, banheiro, sacada, lavanderia e tulha. Recuar 10cm na base e 10cm no topo — esses 10cm podem ser em MDF comum.'},{t:'Módulo SEM FUNDO com pedra',d:'Tampo/bancada de pedra natural: módulo abaixo sem fundo. Pedra assenta diretamente na estrutura lateral.'},{t:'Junta seca — fita nas laterais',d:'Junta seca = painéis se encontram sem perfil. Faces que se tocam: SEM fita. Quando for negativo (recuo visual): manter fitas normalmente.'},{t:'Ripado — largura da ripa vs vão',d:'Sempre dimensionar pela largura da RIPA (a peça física), não pelo vão entre ripas. Erro comum: projetar pelo vão ao invés da ripa.'},{t:'Acabamento posterior — procedimento',d:'Fundo visível: 1) Recuos +7mm. 2) Apagar fundo padrão na mira vermelha DinaBox. 3) Alterar espessura do fundo para 15,5mm.'},{t:'Geometria 1cm — painéis ao chão',d:'Painéis ao chão: geometria 1cm na base no SketchUp. Indica ao marceneiro que precisa de madeira maciça nessa região.'},{t:'Geometria 6mm — negativos de painéis',d:'Para negativo visual entre módulos: geometria 6mm no DinaBox entre painéis — instrui colocar peça de 6mm para o recuo visual.'}]},
+{cat:'💡 LED e Iluminação',itens:[{t:'Posicionamento da fita LED',d:'Fita de LED fixada na parte EXTERNA da lateral do módulo (não dentro). Difusores de acrílico somente nos vãos de abertura.'},{t:'Recuo dos difusores',d:'12cm a partir da frente do módulo. Quando risco de colisão com prateleiras ou gavetas: recuar para 15cm.'},{t:'Reator — local no projeto',d:'LED interno: prever local físico para reator e sensor. Caixa no topo, nicho lateral ou compartimento específico.'},{t:'Temperatura de cor: 3000K',d:'Padrão Jair Móveis: LED 3000K (branco quente). Aplicável em cozinhas e banheiros. Verificar com cliente/arquiteto se há especificação diferente.'}]},
+{cat:'🏗️ Módulos Especiais',itens:[{t:'Sistema 4 Plus — topo 25mm',d:'Fixação sem parafuso aparente: tampo/topo OBRIGATORIAMENTE 25mm para suportar a carga estrutural. Aprovado pelo Jair.'},{t:'Cristaleira — caixa toda em 25mm',d:'Toda a caixa em MDF 25mm. Rigidez para suportar portas de vidro e iluminação. Padrão aprovado pelo Jair.'},{t:'Baú — articulador com 20cm mínimo',d:'Tampa articulada: articulador exige altura interna mínima de 20cm para funcionar sem travar.'},{t:'Perfil Cava Fixa — usinagem e fixação',d:'1) Usinagem específica no MDF. 2) Peças adicionais de fixação. 3) Gavetas Blum. Verificar antes de liberar para produção.'},{t:'Armário com rodízio — fundo visível',d:'Módulos com rodízio ficam com fundo visível. Obrigatório colocar peça de acabamento no fundo.'}]},
+{cat:'📐 Posicionamento',itens:[{t:'Afastamento superior de painéis: 5mm',d:'Padrão JM: espaço entre topo do painel e elemento superior = sempre 5mm. Acabamento uniforme e visual limpo.'},{t:'Roupeiros afastados da parede: 1–2cm',d:'Não encostar direto na parede lateral. 1 a 2cm facilita montagem e acomoda imperfeições naturais da parede.'},{t:'Descontar piso no pé direito',d:'Com revestimento de piso: descontar espessura do revestimento + argamassa/cola do pé direito antes de modelar.'}]}
+];
+
+let DB={ambientes:[],fresas:[],decisoes:[],padroes:[],normas:[],ck:{},obs:{},gtpl:null,ttpl:{}};
+function loadDB(){
+  try{const r=localStorage.getItem('jm_ppcp_v5');if(r) DB=JSON.parse(r);
+  if(!DB.padroes)DB.padroes=[];if(!DB.normas)DB.normas=[];if(!DB.ck)DB.ck={};if(!DB.obs)DB.obs={};
+  if(!DB.gtpl)DB.gtpl=jcp(GD);if(!DB.ttpl)DB.ttpl={};
+  ['jm_pt_db_v2','jm_pt_v3','jm_pt_v4'].forEach(k=>{const o=localStorage.getItem(k);if(o&&!localStorage.getItem('mig_'+k)){try{const d=JSON.parse(o);const fi=DB.fresas.map(f=>f.id);if(d.fresas)d.fresas.filter(f=>!fi.includes(f.id)).forEach(f=>DB.fresas.push(f));const pi=DB.padroes.map(p=>p.id);if(d.padroes)d.padroes.filter(p=>!pi.includes(p.id)).forEach(p=>DB.padroes.push(p));const ni=DB.normas.map(n=>n.id);if(d.normas)d.normas.filter(n=>!ni.includes(n.id)).forEach(n=>DB.normas.push(n));localStorage.setItem('mig_'+k,'1');saveDB();toast('✅ Dados importados de versão anterior!');}catch(e){}}});
+  }catch(e){}
+}
+function saveDB(skipSyncTouch){
+  localStorage.setItem('jm_ppcp_v5',JSON.stringify(DB));
+  if(!skipSyncTouch){
+    const m=gdGetMeta();m.localModifiedAt=new Date().toISOString();gdSaveMeta(m);
+    if(gAuth.token&&(_gdLastState==='connected'||_gdLastState==='synced'||_gdLastState==='pending'))gdRenderStatus('pending');
+  }
+}
+function ensureDBShape(){
+  if(!DB.ambientes)DB.ambientes=[];if(!DB.fresas)DB.fresas=[];if(!DB.decisoes)DB.decisoes=[];
+  if(!DB.padroes)DB.padroes=[];if(!DB.normas)DB.normas=[];if(!DB.ck)DB.ck={};if(!DB.obs)DB.obs={};
+  if(!DB.gtpl)DB.gtpl=jcp(GD);if(!DB.ttpl)DB.ttpl={};
+}
+
+/* ===== Sincronização com Google Drive =====
+   Configure GOOGLE_CLIENT_ID com o "Client ID" OAuth (tipo "Aplicativo da Web")
+   criado no Google Cloud Console, com a origem onde este sistema é hospedado
+   autorizada em "Origens JavaScript autorizadas". */
+const GOOGLE_CLIENT_ID='SEU_CLIENT_ID_AQUI.apps.googleusercontent.com';
+const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
+const GD_FILENAME='ppcp_sync_dados.json';
+const GD_META_KEY='jm_ppcp_sync_meta';
+let gAuth={tokenClient:null,token:null,expiresAt:0,fileId:null};
+let _gdMeta=null,_gdLastState='disconnected',_gdInitTries=0,_syncConflict=null;
+
+function gdGetMeta(){if(!_gdMeta){try{_gdMeta=JSON.parse(localStorage.getItem(GD_META_KEY))||{};}catch(e){_gdMeta={};}}return _gdMeta;}
+function gdSaveMeta(m){_gdMeta=m;localStorage.setItem(GD_META_KEY,JSON.stringify(m));}
+
+function gdInit(){
+  if(window.google&&google.accounts&&google.accounts.oauth2){
+    gAuth.tokenClient=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:GD_SCOPE,callback:()=>{}});
+    gdRestoreSession();
+  }else if(_gdInitTries<60){_gdInitTries++;setTimeout(gdInit,250);}
+}
+function gdRestoreSession(){
+  try{
+    const sv=JSON.parse(sessionStorage.getItem('gd_token')||'null');
+    if(sv&&sv.token&&sv.expiresAt>Date.now()){gAuth.token=sv.token;gAuth.expiresAt=sv.expiresAt;gdRenderStatus('connected');gdAutoCheck();return;}
+  }catch(e){}
+  gdRenderStatus(localStorage.getItem('gd_connected')==='1'?'reconnect':'disconnected');
+}
+function gdRequestToken(opts){
+  opts=opts||{};
+  return new Promise((resolve,reject)=>{
+    if(!gAuth.tokenClient){reject(new Error('Google ainda não carregou. Tente novamente em instantes.'));return;}
+    gAuth.tokenClient.callback=(resp)=>{
+      if(resp&&resp.error){reject(new Error(resp.error));return;}
+      gAuth.token=resp.access_token;
+      gAuth.expiresAt=Date.now()+(resp.expires_in*1000)-60000;
+      try{sessionStorage.setItem('gd_token',JSON.stringify({token:gAuth.token,expiresAt:gAuth.expiresAt}));}catch(e){}
+      localStorage.setItem('gd_connected','1');
+      resolve(gAuth.token);
+    };
+    gAuth.tokenClient.requestAccessToken(opts.silent?{prompt:''}:{});
+  });
+}
+async function gdEnsureToken(){
+  if(gAuth.token&&Date.now()<gAuth.expiresAt)return;
+  try{await gdRequestToken({silent:true});}
+  catch(e){gdRenderStatus('reconnect');throw new Error('Sessão do Google expirou. Clique em "Conectar" para retomar.');}
+}
+function gdConnect(){
+  if(!GOOGLE_CLIENT_ID||GOOGLE_CLIENT_ID.indexOf('SEU_CLIENT_ID')>-1){toast('⚠️ Configure GOOGLE_CLIENT_ID no código antes de usar a sincronização.');return;}
+  if(!gAuth.tokenClient){toast('Aguarde o Google carregar e tente novamente.');return;}
+  gdRenderStatus('connecting');
+  gdRequestToken({}).then(()=>{toast('✅ Conectado ao Google Drive!');gdAutoCheck();})
+  .catch(err=>{console.error(err);gdRenderStatus(localStorage.getItem('gd_connected')==='1'?'reconnect':'disconnected');toast('Não foi possível conectar ao Google Drive.');});
+}
+function gdDisconnect(){
+  conf('Desconectar do Google Drive?','A sincronização será interrompida. Os dados salvos neste dispositivo continuam aqui normalmente.',()=>{
+    if(gAuth.token&&window.google&&google.accounts&&google.accounts.oauth2)google.accounts.oauth2.revoke(gAuth.token,()=>{});
+    gAuth.token=null;gAuth.expiresAt=0;gAuth.fileId=null;
+    sessionStorage.removeItem('gd_token');localStorage.removeItem('gd_connected');
+    gdRenderStatus('disconnected');toast('Desconectado do Google Drive.');
+  });
+}
+async function gdApiFetch(url,opts){
+  opts=opts||{};
+  await gdEnsureToken();
+  const mk=()=>Object.assign({},opts,{headers:Object.assign({},opts.headers||{},{Authorization:'Bearer '+gAuth.token})});
+  let res=await fetch(url,mk());
+  if(res.status===401){await gdRequestToken({silent:true});res=await fetch(url,mk());}
+  return res;
+}
+async function gdFindFile(){
+  const q=encodeURIComponent(`name='${GD_FILENAME}' and trashed=false`);
+  const res=await gdApiFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,modifiedTime)&spaces=drive`);
+  if(!res.ok)throw new Error('Falha ao consultar o Google Drive.');
+  const j=await res.json();
+  return (j.files&&j.files[0])||null;
+}
+async function gdDownloadFile(fileId){
+  const res=await gdApiFetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`);
+  if(!res.ok)throw new Error('Falha ao baixar dados do Google Drive.');
+  return res.text();
+}
+async function gdUploadFile(content,fileId){
+  const boundary='ppcp_'+Date.now().toString(36);
+  const meta=JSON.stringify({name:GD_FILENAME,mimeType:'application/json'});
+  const body=`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n`+
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${content}\r\n`+
+    `--${boundary}--`;
+  const url=fileId?`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart`:`https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
+  const res=await gdApiFetch(url,{method:fileId?'PATCH':'POST',headers:{'Content-Type':`multipart/related; boundary=${boundary}`},body});
+  if(!res.ok)throw new Error('Falha ao enviar dados para o Google Drive.');
+  return res.json();
+}
+async function gdAutoCheck(){
+  try{
+    gdRenderStatus('checking');
+    const file=await gdFindFile();
+    if(!file){gdRenderStatus('connected');return;}
+    gAuth.fileId=file.id;
+    const meta=gdGetMeta(),lastSync=meta.lastSyncAt||'',localMod=meta.localModifiedAt||'';
+    const remote=JSON.parse(await gdDownloadFile(file.id));
+    const remoteSavedAt=(remote&&remote._meta&&remote._meta.savedAt)||'';
+    const remoteNewer=remoteSavedAt&&remoteSavedAt>lastSync;
+    const localNewer=localMod&&localMod>lastSync;
+    if(remoteNewer&&!localNewer){
+      DB=remote.data;ensureDBShape();saveDB(true);
+      gdSaveMeta({lastSyncAt:remoteSavedAt,localModifiedAt:meta.localModifiedAt||remoteSavedAt});
+      renderDash();toast('🔄 Dados atualizados a partir do Google Drive.');gdRenderStatus('synced');
+    }else if(remoteNewer&&localNewer){gdRenderStatus('conflict');}
+    else if(localNewer){gdRenderStatus('pending');}
+    else{gdSaveMeta(Object.assign({},meta,{lastSyncAt:lastSync||remoteSavedAt||localMod||new Date().toISOString()}));gdRenderStatus('synced');}
+  }catch(e){console.error(e);gdRenderStatus('connected');}
+}
+async function gdSyncNow(){
+  if(!gAuth.token){toast('Conecte-se ao Google Drive primeiro.');return;}
+  try{
+    gdRenderStatus('syncing');
+    let file=gAuth.fileId?{id:gAuth.fileId}:await gdFindFile();
+    let remote=null,remoteSavedAt='';
+    if(file){
+      gAuth.fileId=file.id;
+      try{remote=JSON.parse(await gdDownloadFile(file.id));remoteSavedAt=(remote&&remote._meta&&remote._meta.savedAt)||'';}catch(e){}
+    }
+    const meta=gdGetMeta(),lastSync=meta.lastSyncAt||'',localMod=meta.localModifiedAt||'';
+    const remoteNewer=remoteSavedAt&&remoteSavedAt>lastSync;
+    const localNewer=localMod&&localMod>lastSync;
+    if(remoteNewer&&localNewer){
+      _syncConflict={remote,remoteSavedAt,localMod};
+      G('sc-local').textContent=fdt(localMod);G('sc-remote').textContent=fdt(remoteSavedAt);
+      omo('mo-syncconf');gdRenderStatus('conflict');return;
+    }
+    if(remoteNewer&&!localNewer){
+      DB=remote.data;ensureDBShape();saveDB(true);
+      gdSaveMeta({lastSyncAt:remoteSavedAt,localModifiedAt:localMod||remoteSavedAt});
+      gdRefreshUI();toast('🔄 Dados atualizados a partir do Google Drive.');gdRenderStatus('synced');return;
+    }
+    if(!localNewer&&!remoteNewer){
+      gdSaveMeta(Object.assign({},meta,{lastSyncAt:lastSync||remoteSavedAt||localMod||new Date().toISOString()}));
+      toast('✅ Já está tudo sincronizado.');gdRenderStatus('synced');return;
+    }
+    const now=new Date().toISOString();
+    const payload=JSON.stringify({_meta:{savedAt:localMod||now,app:'Sistema PPCP',versao:'v5'},data:DB},null,2);
+    const result=await gdUploadFile(payload,file&&file.id);
+    gAuth.fileId=result.id;
+    gdSaveMeta({lastSyncAt:localMod||now,localModifiedAt:localMod||now});
+    toast('☁️ Dados enviados para o Google Drive.');gdRenderStatus('synced');
+  }catch(e){console.error(e);gdRenderStatus('error');toast('❌ '+(e.message||'Erro ao sincronizar.'));}
+}
+function gdResolveConflict(choice){
+  cmo('mo-syncconf');
+  if(!_syncConflict)return;
+  const{remote,remoteSavedAt,localMod}=_syncConflict;_syncConflict=null;
+  if(choice==='remote'){
+    DB=remote.data;ensureDBShape();saveDB(true);
+    gdSaveMeta({lastSyncAt:remoteSavedAt,localModifiedAt:remoteSavedAt});
+    gdRefreshUI();toast('🔄 Versão do Google Drive aplicada.');gdRenderStatus('synced');
+  }else{
+    const now=new Date().toISOString();
+    const payload=JSON.stringify({_meta:{savedAt:localMod||now,app:'Sistema PPCP',versao:'v5'},data:DB},null,2);
+    gdRenderStatus('syncing');
+    gdUploadFile(payload,gAuth.fileId).then(result=>{
+      gAuth.fileId=result.id;
+      gdSaveMeta({lastSyncAt:localMod||now,localModifiedAt:localMod||now});
+      toast('☁️ Dados deste dispositivo enviados ao Google Drive.');gdRenderStatus('synced');
+    }).catch(e=>{console.error(e);gdRenderStatus('error');toast('❌ Erro ao enviar dados.');});
+  }
+}
+function gdRefreshUI(){
+  renderDash();
+  const a=document.querySelector('.view.active');
+  if(a){const n=a.id.replace('view-','');if(n!=='dash')go(n);}
+}
+const GD_STATES={
+  disconnected:{dot:'#ccc',txt:'Desconectado',info:'Conecte-se para manter os dados sincronizados entre dispositivos.',conn:true,sync:false,off:false},
+  connecting:{dot:'#f39c12',txt:'Conectando…',info:'',conn:false,sync:false,off:false},
+  reconnect:{dot:'#f39c12',txt:'Sessão expirada',info:'Clique em "Conectar" para retomar a sincronização.',conn:true,sync:false,off:true},
+  checking:{dot:'#2563a8',txt:'Verificando…',info:'',conn:false,sync:false,off:false},
+  syncing:{dot:'#2563a8',txt:'Sincronizando…',info:'',conn:false,sync:false,off:false},
+  connected:{dot:'#27ae60',txt:'Conectado',info:'',conn:false,sync:true,off:true},
+  synced:{dot:'#27ae60',txt:'Sincronizado',info:'',conn:false,sync:true,off:true},
+  pending:{dot:'#f39c12',txt:'Alterações pendentes',info:'Há alterações neste dispositivo que ainda não foram enviadas ao Drive.',conn:false,sync:true,off:true},
+  conflict:{dot:'#e74c3c',txt:'Conflito detectado',info:'Há alterações em mais de um lugar — clique em "Sincronizar agora" para escolher qual versão manter.',conn:false,sync:true,off:true},
+  error:{dot:'#e74c3c',txt:'Erro de sincronização',info:'Não foi possível sincronizar agora. Tente novamente em instantes.',conn:false,sync:true,off:true}
+};
+function gdRenderStatus(state){
+  if(state)_gdLastState=state;else state=_gdLastState;
+  const s=GD_STATES[state]||GD_STATES.disconnected;
+  const dot=G('sync-dot'),txt=G('sync-statustxt'),info=G('sync-info');
+  const conn=G('sync-connbtn'),syncb=G('sync-nowbtn'),offb=G('sync-offbtn');
+  if(dot)dot.style.background=s.dot;
+  if(txt)txt.textContent=s.txt;
+  if(info){
+    const meta=gdGetMeta();let extra=s.info||'';
+    if(meta.lastSyncAt&&(state==='synced'||state==='connected'||state==='pending'))extra+=(extra?' ':'')+'Última sincronização: '+fdt(meta.lastSyncAt)+'.';
+    info.textContent=extra;
+  }
+  if(conn)conn.style.display=s.conn?'':'none';
+  if(syncb)syncb.style.display=s.sync?'':'none';
+  if(offb)offb.style.display=s.off?'':'none';
+  const ind=G('syncind');if(ind)ind.textContent=s.txt;
+  const dt=G('syncdot');if(dt)dt.style.background=s.dot;
+}
+function renderSync(){gdRenderStatus();}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function jcp(x){return JSON.parse(JSON.stringify(x));}
+function GT(){if(!DB.gtpl)DB.gtpl=jcp(GD);return DB.gtpl;}
+function TT(tipo){if(!DB.ttpl[tipo])DB.ttpl[tipo]=jcp(TBD[tipo]||[]);return DB.ttpl[tipo];}
+const TTLS={dash:'Dashboard',ck:'Checklist',amb:'Ambientes',dec:'Decisões',fresas:'Fresas CNC',pad:'Padrões',normas:'Normas PT',notas:'Notas Técnicas',edit:'Editar Checklists',sync:'Google Drive'};
+function go(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('#sb nav a').forEach(a=>a.classList.toggle('active',a.dataset.view===name));
+  document.getElementById('ttl').textContent=TTLS[name]||'';
+  cSB();
+  if(name==='dash')renderDash();if(name==='ck')renderCKSel();
+  if(name==='amb'){renderAmb();bTipos();}if(name==='dec'){renderDecSel();renderDec();}
+  if(name==='fresas')renderFresas();if(name==='pad')renderPad();
+  if(name==='normas')renderNormas();if(name==='notas')renderNotas();
+  if(name==='edit')renderEditNav();if(name==='sync')renderSync();
+}
+function tSB(){document.getElementById('sb').classList.toggle('open');document.getElementById('sbov').classList.toggle('open');}
+function cSB(){document.getElementById('sb').classList.remove('open');document.getElementById('sbov').classList.remove('open');}
+function bTipos(){
+  const c=document.getElementById('tipobtns');
+  c.innerHTML=TIPOS.map(t=>`<div class="tbtn" data-tipo="${t.id}" onclick="sTipo('${t.id}')"><span class="tico">${t.ico}</span><span>${t.nome}</span></div>`).join('');
+}
+function sTipo(id){document.querySelectorAll('#tipobtns .tbtn').forEach(b=>b.classList.toggle('sel',b.dataset.tipo===id));G('a-tipo').value=id;}
+function salvarAmb(){
+  const c=V('a-cli'),n=V('a-nom'),t=V('a-tipo');
+  if(!c||!n){toast('Preencha Cliente e Ambiente.');return;}if(!t){toast('Selecione o tipo.');return;}
+  DB.ambientes.push({id:uid(),cliente:c,nome:n,codigo:V('a-cod'),versao:V('a-ver')||'V01',arquiteto:V('a-arq'),projetista:V('a-pj'),prazo:V('a-prz'),tipo:t,status:'2',criadoEm:new Date().toISOString(),atualEm:new Date().toISOString()});
+  saveDB();['a-cli','a-nom','a-cod','a-ver','a-arq','a-pj','a-prz'].forEach(id=>S(id,''));S('a-tipo','');document.querySelectorAll('#tipobtns .tbtn').forEach(b=>b.classList.remove('sel'));renderAmb();toast('Ambiente cadastrado!');
+}
+function renderAmb(){
+  const srch=(G('a-srch')?.value||'').toLowerCase();const fil=G('a-fil')?.value||'';
+  const tb=G('a-tb');let list=[...DB.ambientes];
+  if(srch)list=list.filter(a=>(a.cliente||'').toLowerCase().includes(srch)||(a.codigo||'').toLowerCase().includes(srch));
+  if(fil)list=list.filter(a=>(a.status||'2')===fil);
+  if(!list.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--mt)">Nenhum ambiente encontrado.</td></tr>';return;}
+  tb.innerHTML=list.map(a=>{
+    const pct=calcProg(a.id);const t=TIPOS.find(x=>x.id===a.tipo)||{ico:'📦',nome:'Outro'};const st=STS[a.status||'2']||{l:'—',c:'bgr'};
+    return`<tr><td><span class="bdg bin">${eH(a.codigo)||'—'}</span></td><td><strong>${eH(a.cliente)}</strong></td><td>${eH(a.nome)} <span style="font-size:11px;color:var(--mt)">${eH(a.versao)||''}</span></td><td>${t.ico} <span style="font-size:12px">${t.nome}</span></td><td style="font-size:12px">${eH(a.projetista)||'—'}</td><td><span class="bdg ${st.c}" style="cursor:pointer" onclick="openST('${a.id}')" title="Clique para alterar">${st.l}</span></td><td style="min-width:110px"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px;width:30px">${pct}%</span><div class="pb" style="flex:1"><div class="fi" style="width:${pct}%"></div></div></div></td><td style="font-size:12px">${a.prazo?fd(a.prazo):'—'}</td><td style="white-space:nowrap"><button class="btn bp bs" onclick="openCK('${a.id}')">Checklist</button> <button class="btn bdn bs" onclick="delAmb('${a.id}')">✕</button></td></tr>`;
+  }).join('');
+}
+function openCK(id){go('ck');setTimeout(()=>{S('ck-sel',id);loadCK();},60);}
+function delAmb(id){conf('Excluir ambiente?','Remove checklist e decisões vinculados.',()=>{DB.ambientes=DB.ambientes.filter(a=>a.id!==id);delete DB.ck[id];delete DB.obs[id];DB.decisoes=DB.decisoes.filter(d=>d.ambienteId!==id);saveDB();renderAmb();toast('Excluído.');});}
+function openST(id){S('es-id',id);const a=DB.ambientes.find(x=>x.id===id);if(a)S('es-st',a.status||'2');omo('mo-st');}
+function saveST(){const id=V('es-id');const a=DB.ambientes.find(x=>x.id===id);if(a){a.status=V('es-st');a.atualEm=new Date().toISOString();saveDB();cmo('mo-st');renderAmb();toast('Status atualizado!');}}
+function renderCKSel(){const s=G('ck-sel'),cur=s.value;s.innerHTML='<option value="">— selecione —</option>'+DB.ambientes.map(a=>`<option value="${a.id}" ${a.id===cur?'selected':''}>${eH(a.cliente)} — ${eH(a.nome)}</option>`).join('');}
+function loadCK(){
+  const ambId=V('ck-sel');const bdg=G('ck-bdg');const cc=G('ck-ct');const pb=G('pbtn');
+  if(!ambId){bdg.style.display='none';if(pb)pb.style.display='none';cc.innerHTML='<div class="card" style="text-align:center;color:var(--mt);padding:32px">Selecione um ambiente.</div>';return;}
+  const amb=DB.ambientes.find(a=>a.id===ambId);
+  bdg.style.display='inline-flex';bdg.innerHTML=`${TIPOS.find(t=>t.id===amb.tipo)?.ico||'📦'} ${eH(amb.cliente)} — ${eH(amb.nome)}`;
+  if(pb)pb.style.display='inline-flex';
+  if(!DB.ck[ambId])DB.ck[ambId]={};if(!DB.obs[ambId])DB.obs[ambId]={};
+  const phdr=G('phdr');if(phdr)phdr.innerHTML=`<div style="font-size:17px;font-weight:700;margin-bottom:8px">Sistema PPCP — Jair Móveis</div><div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;border-bottom:2px solid #333;padding-bottom:10px"><span>Cliente: <strong>${eH(amb.cliente)}</strong></span><span>Ambiente: <strong>${eH(amb.nome)}</strong></span><span>Projetista: <strong>${eH(amb.projetista)||'—'}</strong></span><span>Data: <strong>${new Date().toLocaleDateString('pt-BR')}</strong></span><span>Versão: <strong>${eH(amb.versao)||'—'}</strong></span></div>`;
+  const blocos=[...GT(),...TT(amb.tipo)];
+  const pads=DB.padroes.filter(p=>p.ambiente===amb.tipo||p.ambiente==='todos');
+  const pct=calcProg(ambId);
+  const f1b=blocos.filter(b=>b.fase==='f1'),f2b=blocos.filter(b=>b.fase==='f2'),f3b=blocos.filter(b=>b.fase==='f3');
+  const st=STS[amb.status||'2']||{l:'—',c:'bgr'};
+  let html=`<div class="card nop" style="padding:12px 16px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:14px;font-weight:600">Progresso geral</span><span style="font-size:20px;font-weight:700;color:var(--pr)">${pct}%</span></div><div class="pb" style="height:10px"><div class="fi" style="width:${pct}%"></div></div><div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap;align-items:center"><button class="btn bg bs" onclick="markAll('${ambId}',true)">✅ Marcar tudo</button><button class="btn bg bs" onclick="markAll('${ambId}',false)">☐ Desmarcar tudo</button><span class="bdg ${st.c}" style="cursor:pointer" onclick="openST('${ambId}')">${st.l}</span></div></div>`;
+  if(pads.length)html+=`<div class="card nop" style="border-left:4px solid var(--ac);background:#fffdf8;margin-bottom:12px"><div style="font-size:13px;font-weight:600;margin-bottom:8px">⚠️ ${pads.length} padrão(ões) para este ambiente — <span style="color:var(--pl);cursor:pointer" onclick="go('pad')">ver todos</span></div>${pads.slice(0,3).map(p=>`<div style="font-size:12px;padding:3px 0;border-bottom:1px solid #f0f0f0"><span class="bdg bor" style="margin-right:4px;font-size:10px">${eH(p.categoria)}</span><strong>${eH(p.titulo)}</strong>${p.variacoes?` <span style="color:var(--mt)">— ${eH(p.variacoes)}</span>`:''}</div>`).join('')}</div>`;
+  [[f1b,'f1c','f1sep','FASE 1 — PROJETO COMERCIAL'],[f2b,'f2c','f2sep','FASE 2 — ENGENHARIA EXECUTIVA'],[f3b,'f3c','f3sep','FASE 3 — INDUSTRIALIZAÇÃO']].forEach(([fb,fc,fs,fn],fi)=>{
+    if(!fb.length)return;
+    const fm=fb.reduce((a,b)=>a+b.itens.filter(it=>DB.ck[ambId][it.id]?.checked).length,0);
+    const ft=fb.reduce((a,b)=>a+b.itens.length,0);
+    const fp=Math.round(fm/ft*100);
+    html+=`<div class="fase-sep ${fs}"></div><button class="fhdr ${fc}" onclick="tFase(this)"><span class="fn">${fi+1}</span><h3>${fn}</h3><span class="fmeta">${fm}/${ft} · ${fp}%</span><span class="fch">▼</span></button><div class="fbody">`;
+    fb.forEach((bloco,bi)=>{
+      const ck=DB.ck[ambId];const marc=bloco.itens.filter(it=>ck[it.id]?.checked).length;const tot=bloco.itens.length;
+      const epct=Math.round(marc/tot*100);const cor=epct===100?'var(--ok)':epct>0?'var(--ac)':(bloco.cor||'var(--pr)');
+      const ids=JSON.stringify(bloco.itens.map(i=>i.id));
+      html+=`<div class="bblock"><div class="bh" onclick="tBloco(this)" style="background:${cor}"><div class="bi"><span style="background:rgba(255,255,255,.2);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${bi+1}</span><h4>${eH(bloco.nome)}</h4></div><div style="display:flex;align-items:center;gap:8px"><span class="bc">${marc}/${tot}</span><span class="ch">▼</span></div></div><div class="bb"><div style="padding:5px 14px;background:#f8f9fb;border-bottom:1px solid var(--br)"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mt);margin-bottom:2px"><span>${eH(bloco.nome)}</span><span>${epct}%</span></div><div class="pb"><div class="fi" style="width:${epct}%"></div></div></div>`;
+      bloco.itens.forEach(it=>{
+        const s=ck[it.id]||{};const txt=it.t||it.texto||'';const nota=it.n||it.nota||'';
+        html+=`<div class="ci${s.checked?' dn':''}" id="ci-${it.id}"><input type="checkbox" ${s.checked?'checked':''} onchange="togItem('${ambId}','${it.id}',this.checked)"><div class="ico2"><div class="itx">${eH(txt)}${tagH(it.tag)}</div>${nota?`<div class="inota">📌 ${eH(nota)}</div>`:''} ${s.hv?`<div class="ivalb"><input type="text" placeholder="Valor / anotação..." value="${eH(s.val||'')}" onchange="saveVal('${ambId}','${it.id}',this.value)"></div>`:''}</div><div class="nop" style="display:flex;gap:3px;flex-shrink:0"><button class="btn bg bs" onclick="togVal('${ambId}','${it.id}')" style="padding:3px 6px;font-size:10px" title="Campo de valor">📝${s.hv?'✓':''}</button></div></div>`;
+      });
+      const obsKey=bloco.id;const obsVal=DB.obs[ambId]?.[obsKey]||'';
+      html+=`<div class="obs-b"><label>📋 Observações deste bloco (aparece no PDF):</label><textarea placeholder="Anotações, valores, decisões..." onchange="saveObs('${ambId}','${obsKey}',this.value)">${eH(obsVal)}</textarea>${obsVal?`<div class="obsp" style="font-size:12px;padding:4px 0"><strong>Obs:</strong> ${eH(obsVal)}</div>`:''}</div><div class="nop" style="padding:7px 14px;border-top:1px solid #f5f5f5;display:flex;gap:7px"><button class="btn bg bs" onclick="markBloco(${ids},'${ambId}',true)">Marcar bloco</button><button class="btn bg bs" onclick="markBloco(${ids},'${ambId}',false)">Desmarcar</button></div></div></div>`;
+    });
+    html+='</div>';
+  });
+  cc.innerHTML=html;
+}
+function tagH(tag){if(tag==='critico')return'<span class="tag tc">CRÍTICO</span>';if(tag==='aviso')return'<span class="tag ta">ATENÇÃO</span>';if(tag==='auto')return'<span class="tag tg">REGISTRAR</span>';if(tag==='padrao')return'<span class="tag tp">PADRÃO</span>';return'';}
+function tFase(h){h.classList.toggle('col');h.nextElementSibling.classList.toggle('hid');}
+function tBloco(h){h.classList.toggle('col');h.nextElementSibling.classList.toggle('hid');}
+function togItem(ambId,itemId,val){if(!DB.ck[ambId])DB.ck[ambId]={};if(!DB.ck[ambId][itemId])DB.ck[ambId][itemId]={};DB.ck[ambId][itemId].checked=val;saveDB();const ci=G('ci-'+itemId);if(ci)ci.classList.toggle('dn',val);}
+function togVal(ambId,itemId){if(!DB.ck[ambId])DB.ck[ambId]={};if(!DB.ck[ambId][itemId])DB.ck[ambId][itemId]={};DB.ck[ambId][itemId].hv=!DB.ck[ambId][itemId].hv;saveDB();loadCK();}
+function saveVal(ambId,itemId,val){if(!DB.ck[ambId])DB.ck[ambId]={};if(!DB.ck[ambId][itemId])DB.ck[ambId][itemId]={};DB.ck[ambId][itemId].val=val;saveDB();}
+function saveObs(ambId,key,val){if(!DB.obs[ambId])DB.obs[ambId]={};DB.obs[ambId][key]=val;saveDB();}
+function markAll(ambId,val){const amb=DB.ambientes.find(a=>a.id===ambId);const blocos=[...GT(),...TT(amb?.tipo||'outro')];if(!DB.ck[ambId])DB.ck[ambId]={};blocos.forEach(b=>b.itens.forEach(it=>{if(!DB.ck[ambId][it.id])DB.ck[ambId][it.id]={};DB.ck[ambId][it.id].checked=val;const ci=G('ci-'+it.id);if(ci){ci.classList.toggle('dn',val);const cb=ci.querySelector('input[type=checkbox]');if(cb)cb.checked=val;}}));saveDB();toast(val?'Tudo marcado!':'Tudo desmarcado.');}
+function markBloco(ids,ambId,val){if(!DB.ck[ambId])DB.ck[ambId]={};ids.forEach(id=>{if(!DB.ck[ambId][id])DB.ck[ambId][id]={};DB.ck[ambId][id].checked=val;const ci=G('ci-'+id);if(ci){ci.classList.toggle('dn',val);const cb=ci.querySelector('input[type=checkbox]');if(cb)cb.checked=val;}});saveDB();toast(val?'Bloco marcado!':'Bloco desmarcado.');}
+function calcProg(ambId){const amb=DB.ambientes.find(a=>a.id===ambId);if(!amb)return 0;const blocos=[...GT(),...TT(amb.tipo)];const ck=DB.ck[ambId]||{};let tot=0,marc=0;blocos.forEach(b=>b.itens.forEach(it=>{tot++;if(ck[it.id]?.checked)marc++;}));return tot?Math.round(marc/tot*100):0;}
+let editScope='global';
+function renderEditNav(){
+  const c=G('editipos');c.innerHTML=TIPOS.map(t=>`<button class="btn bs ${editScope===t.id?'bpr':'bg'}" onclick="setSc('${t.id}')">${t.ico} ${t.nome}</button>`).join('');
+  G('ebtng').className='btn bs '+(editScope==='global'?'bpr':'bg');
+  G('esc-lbl').textContent=editScope==='global'?'🌐 Editando: Blocos Globais':'Editando: '+(TIPOS.find(t=>t.id===editScope)?.nome||editScope)+' — blocos específicos';
+  renderEditBlocks();
+}
+function setSc(s){editScope=s;renderEditNav();}
+function getET(){if(editScope==='global'){if(!DB.gtpl)DB.gtpl=jcp(GD);return DB.gtpl;}if(!DB.ttpl[editScope])DB.ttpl[editScope]=jcp(TBD[editScope]||[]);return DB.ttpl[editScope];}
+function saveET(tpl){if(editScope==='global')DB.gtpl=tpl;else DB.ttpl[editScope]=tpl;saveDB();}
+function renderEditBlocks(){
+  const tpl=getET();const cc=G('edit-ct');
+  if(!tpl.length){cc.innerHTML='<div class="card" style="text-align:center;color:var(--mt);padding:24px">Nenhum bloco. Crie um bloco abaixo.</div>';return;}
+  let html='';
+  tpl.forEach((bloco,bi)=>{
+    const txt=it=>it.t||it.texto||'';
+    html+=`<div class="card" style="margin-bottom:12px"><div style="display:flex;align-items:center;gap:9px;margin-bottom:10px"><div style="background:${bloco.cor||'var(--pr)'};color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0">${bi+1}</div><input type="text" value="${eH(bloco.nome)}" style="flex:1;border:1px solid var(--br);border-radius:6px;padding:6px 9px;font-size:13px;font-weight:600" onblur="renBloco(${bi},this.value)"><input type="color" value="${bloco.cor||'#1a4a7a'}" onchange="corBloco(${bi},this.value)" style="width:36px;height:32px;padding:2px;border:1px solid var(--br);border-radius:6px;cursor:pointer"><span style="font-size:12px;color:var(--mt)">${bloco.itens.length}it</span><button class="btn bdn bs" onclick="delBloco(${bi})">🗑</button></div>`;
+    bloco.itens.forEach((it,ii)=>{html+=`<div class="ei"><select class="ts" onchange="editTag(${bi},${ii},this.value)"><option value="normal" ${it.tag==='normal'?'selected':''}>normal</option><option value="critico" ${it.tag==='critico'?'selected':''}>CRÍTICO</option><option value="aviso" ${it.tag==='aviso'?'selected':''}>ATENÇÃO</option><option value="auto" ${it.tag==='auto'?'selected':''}>REGISTRAR</option><option value="padrao" ${it.tag==='padrao'?'selected':''}>PADRÃO</option></select><input class="etx" type="text" value="${eH(txt(it))}" onblur="editTxt(${bi},${ii},this.value)" onkeydown="if(event.key==='Enter')this.blur()"><button class="btn bg bs" onclick="togHv(${bi},${ii})" style="padding:3px 7px;font-size:11px">📝${it.hv?'✓':''}</button><button class="btn bdn bs" onclick="delItem(${bi},${ii})">✕</button></div>`;});
+    html+=`<div class="eadd"><input type="text" id="ni-${bi}" placeholder="Novo item..." onkeydown="if(event.key==='Enter')addItem(${bi})"><select id="nt-${bi}"><option value="normal">normal</option><option value="critico">CRÍTICO</option><option value="aviso">ATENÇÃO</option><option value="padrao">PADRÃO</option></select><button class="btn bok bs" onclick="addItem(${bi})">+ Item</button></div></div>`;
+  });
+  cc.innerHTML=html;
+}
+function renBloco(bi,n){if(!n.trim())return;const t=getET();t[bi].nome=n.trim();saveET(t);toast('Renomeado.');}
+function corBloco(bi,c){const t=getET();t[bi].cor=c;saveET(t);}
+function delBloco(bi){conf('Excluir bloco?','Todos os itens serão removidos.',()=>{const t=getET();t.splice(bi,1);saveET(t);renderEditBlocks();toast('Bloco excluído.');});}
+function editTxt(bi,ii,txt){if(!txt.trim())return;const t=getET();t[bi].itens[ii].t=txt.trim();saveET(t);}
+function editTag(bi,ii,tag){const t=getET();t[bi].itens[ii].tag=tag;saveET(t);}
+function togHv(bi,ii){const t=getET();t[bi].itens[ii].hv=!t[bi].itens[ii].hv;saveET(t);renderEditBlocks();}
+function delItem(bi,ii){conf('Excluir item?','',()=>{const t=getET();t[bi].itens.splice(ii,1);saveET(t);renderEditBlocks();toast('Item excluído.');});}
+function addItem(bi){const inp=G('ni-'+bi);const tag=G('nt-'+bi);if(!inp.value.trim()){toast('Digite o texto.');return;}const t=getET();t[bi].itens.push({id:editScope+'_'+uid(),t:inp.value.trim(),tag:tag.value,hv:false});saveET(t);inp.value='';renderEditBlocks();toast('Item adicionado!');}
+function cBloco(){const nome=V('nb-n');if(!nome){toast('Informe o nome.');return;}const scope=V('nb-sc');const fase=V('nb-fase');const cor=G('nb-cor').value||'#1a4a7a';const novo={id:'bloco_'+uid(),nome,cor,fase,scope,itens:[]};if(scope==='global'){if(!DB.gtpl)DB.gtpl=jcp(GD);DB.gtpl.push(novo);}else{if(!DB.ttpl[scope])DB.ttpl[scope]=jcp(TBD[scope]||[]);DB.ttpl[scope].push(novo);}saveDB();S('nb-n','');editScope=scope;renderEditNav();toast(`Bloco "${nome}" criado!`);}
+const CATB={acabamento:'bin',ferragem:'bgr',eletrico:'bwn',eletrodomestico:'bgr',estrutura:'bin',aprovacao:'bok2',ppcp:'bpu',outros:'bgr'};
+const CATL={acabamento:'Acabamento',ferragem:'Ferragem',eletrico:'Elétrico',eletrodomestico:'Eletrodoméstico',estrutura:'Estrutura',aprovacao:'Aprovação',ppcp:'PPCP',outros:'Outros'};
+function renderDecSel(){const o='<option value="">— selecione —</option>'+DB.ambientes.map(a=>`<option value="${a.id}">${eH(a.cliente)} — ${eH(a.nome)}</option>`).join('');G('dc-amb').innerHTML=o;G('dc-fil').innerHTML='<option value="">Todos</option>'+DB.ambientes.map(a=>`<option value="${a.id}">${eH(a.cliente)} — ${eH(a.nome)}</option>`).join('');}
+function salvarDec(){const ambId=V('dc-amb'),tit=V('dc-tit');if(!ambId||!tit){toast('Selecione ambiente e informe a decisão.');return;}DB.decisoes.push({id:uid(),ambienteId:ambId,categoria:V('dc-cat'),titulo:tit,detalhe:V('dc-det'),criadoEm:new Date().toISOString()});saveDB();S('dc-tit','');S('dc-det','');renderDec();toast('Decisão registrada!');}
+function renderDec(){const f=V('dc-fil');const lst=G('dc-lst');let dec=[...DB.decisoes].filter(d=>!f||d.ambienteId===f).reverse();if(!dec.length){lst.innerHTML='<p style="color:var(--mt);font-size:13px">Nenhuma decisão.</p>';return;}lst.innerHTML=dec.map(d=>{const a=DB.ambientes.find(x=>x.id===d.ambienteId);return`<div class="di"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="bdg ${CATB[d.categoria]||'bgr'}" style="margin-right:5px">${CATL[d.categoria]||d.categoria}</span><strong>${eH(d.titulo)}</strong></div><button class="btn bdn bs" onclick="delDec('${d.id}')">✕</button></div>${d.detalhe?`<div style="margin-top:5px;font-size:13px">${eH(d.detalhe)}</div>`:''}<div class="dm">${a?eH(a.cliente)+' — '+eH(a.nome):'?'} · ${fdt(d.criadoEm)}</div></div>`;}).join('');}
+function delDec(id){conf('Excluir?','',()=>{DB.decisoes=DB.decisoes.filter(d=>d.id!==id);saveDB();renderDec();toast('Excluído.');});}
+const FTLBL={compression:'Compression',upcut:'Upcut',downcut:'Downcut',vbit:'V-Bit',roundover:'Round-Over',forstner:'Forstner',broca:'Broca',plana:'Plana',bola:'Bola',outros:'Outros'};
+const MATLBL={todos:'Todos',mdf6:'MDF 6mm',mdf15:'MDF 15mm',mdf18:'MDF 18mm',mdf25:'MDF 25mm',mdp:'MDP/BP',acrilico:'Acrílico',pvc:'PVC'};
+function salvarFresa(){const nom=V('f-nom');if(!nom){toast('Informe o nome.');return;}DB.fresas.push({id:uid(),posicao:V('f-pos'),nome:nom,tipo:V('f-tip'),diametro:V('f-dia'),comprimento:V('f-comp'),dentes:V('f-den'),rpm:V('f-rpm'),avanco:V('f-ava'),ap:V('f-ap'),material:V('f-mat'),uso:V('f-uso'),estado:V('f-est'),obs:V('f-obs'),criadoEm:new Date().toISOString()});saveDB();['f-pos','f-nom','f-dia','f-comp','f-den','f-rpm','f-ava','f-ap','f-uso','f-obs'].forEach(id=>S(id,''));renderFresas();toast('Fresa cadastrada!');}
+function renderFresas(){const tb=G('f-tb');if(!DB.fresas.length){tb.innerHTML='<tr><td colspan="13" style="text-align:center;color:var(--mt)">Nenhuma fresa.</td></tr>';return;}const EB={ok:'bok2',desgaste:'bwn',troca:'bdn2',ausente:'bgr'};const EL={ok:'OK',desgaste:'Desgaste',troca:'Trocar',ausente:'Ausente'};tb.innerHTML=DB.fresas.map(f=>`<tr><td><strong style="color:var(--pr)">${f.posicao||'—'}</strong></td><td><strong>${eH(f.nome)}</strong></td><td><span class="bdg bgr" style="font-size:10px">${FTLBL[f.tipo]||f.tipo}</span></td><td>${f.diametro||'—'}</td><td>${f.comprimento||'—'}</td><td>${f.dentes||'—'}</td><td>${f.rpm?Number(f.rpm).toLocaleString('pt-BR'):'—'}</td><td>${f.avanco?Number(f.avanco).toLocaleString('pt-BR'):'—'}</td><td>${f.ap||'—'}</td><td><span class="bdg btl" style="font-size:10px">${MATLBL[f.material]||'—'}</span></td><td style="max-width:140px;font-size:12px">${eH(f.uso)||'—'}</td><td><span class="bdg ${EB[f.estado]}">${EL[f.estado]}</span></td><td style="white-space:nowrap"><button class="btn bg bs" onclick="openEF('${f.id}')">✏️</button> <button class="btn bdn bs" onclick="delFresa('${f.id}')">✕</button></td></tr>`).join('');}
+function openEF(id){const f=DB.fresas.find(x=>x.id===id);if(!f)return;S('ef-id',id);const mp={pos:'posicao',nom:'nome',dia:'diametro',comp:'comprimento',den:'dentes',rpm:'rpm',ava:'avanco',ap:'ap',uso:'uso',est:'estado',obs:'obs'};Object.entries(mp).forEach(([k,fk])=>{const el=G('ef-'+k);if(el)el.value=f[fk]||'';});omo('mo-fr');}
+function saveEF(){const f=DB.fresas.find(x=>x.id===V('ef-id'));if(!f)return;const mp={pos:'posicao',nom:'nome',dia:'diametro',comp:'comprimento',den:'dentes',rpm:'rpm',ava:'avanco',ap:'ap',uso:'uso',est:'estado',obs:'obs'};Object.entries(mp).forEach(([k,fk])=>{const el=G('ef-'+k);if(el)f[fk]=el.value;});saveDB();cmo('mo-fr');renderFresas();toast('Fresa atualizada!');}
+function delFresa(id){conf('Excluir fresa?','',()=>{DB.fresas=DB.fresas.filter(f=>f.id!==id);saveDB();renderFresas();toast('Excluído.');});}
+const PAMBL={todos:'Todos',cozinha:'Cozinha',dormitorio:'Dormitório',banheiro:'Banheiro',homeoffice:'Home Office',closet:'Closet',sala:'Sala',areaservico:'Área Serviço',outro:'Outro'};
+const PCATL={posicionamento:'Posicionamento',folgas:'Folgas',material:'Material',ferragem:'Ferragem',usinagem:'Usinagem',instalacao:'Instalação',led:'LED',acabamento:'Acabamento',outro:'Outro'};
+const PCATB={posicionamento:'bin',folgas:'btl',material:'bpu',ferragem:'bgr',usinagem:'bok2',instalacao:'bwn',led:'bor',acabamento:'bin',outro:'bgr'};
+function salvarPad(){const tit=V('p-tit');if(!tit){toast('Informe o título.');return;}DB.padroes.push({id:uid(),titulo:tit,ambiente:V('p-amb'),categoria:V('p-cat'),regra:V('p-reg'),variacoes:V('p-var'),criadoEm:new Date().toISOString()});saveDB();['p-tit','p-reg','p-var'].forEach(id=>S(id,''));renderPad();toast('Padrão cadastrado!');}
+function renderPad(){const fa=V('p-fa'),fc=V('p-fc');const lst=G('p-lst');let pad=[...DB.padroes].filter(p=>(!fa||p.ambiente===fa)&&(!fc||p.categoria===fc)).reverse();if(!pad.length){lst.innerHTML='<p style="color:var(--mt);font-size:13px">Nenhum padrão.</p>';return;}lst.innerHTML=pad.map(p=>`<div class="pi"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px"><div><span class="bdg bor" style="margin-right:4px;font-size:10px">${PAMBL[p.ambiente]||p.ambiente}</span><span class="bdg ${PCATB[p.categoria]||'bgr'}" style="font-size:10px">${PCATL[p.categoria]||p.categoria}</span></div><button class="btn bdn bs" onclick="delPad('${p.id}')">✕</button></div><div class="pt">${eH(p.titulo)}</div>${p.regra?`<div style="font-size:13px;margin-bottom:3px">${eH(p.regra)}</div>`:''}${p.variacoes?`<div style="font-size:12px;color:#666;font-style:italic">📐 ${eH(p.variacoes)}</div>`:''}</div>`).join('');}
+function delPad(id){conf('Excluir padrão?','',()=>{DB.padroes=DB.padroes.filter(p=>p.id!==id);saveDB();renderPad();toast('Excluído.');});}
+const NCATL={manutencao_cnc:'Manutenção CNC',qualidade:'Qualidade',seguranca:'Segurança',producao:'Produção',fresas:'Fresas',material:'Material',outro:'Outro'};
+const NCATB={manutencao_cnc:'bin',qualidade:'bok2',seguranca:'bdn2',producao:'bpu',fresas:'bwn',material:'btl',outro:'bgr'};
+const NPERL={cada_chapa:'A cada chapa',cada_lote:'A cada lote',diario:'Diariamente',semanal:'Semanalmente',mensal:'Mensalmente',necessario:'Quando necessário',troca_fresa:'A cada troca de fresa'};
+function salvarNorma(){const tit=V('n-tit');if(!tit){toast('Informe o título.');return;}DB.normas.push({id:uid(),titulo:tit,categoria:V('n-cat'),periodo:V('n-per'),responsavel:V('n-res'),descricao:V('n-des'),criadoEm:new Date().toISOString()});saveDB();['n-tit','n-res','n-des'].forEach(id=>S(id,''));renderNormas();toast('Norma cadastrada!');}
+function renderNormas(){const fil=V('n-fil');const lst=G('n-lst');let norm=[...DB.normas].filter(n=>!fil||n.categoria===fil).reverse();if(!norm.length){lst.innerHTML='<p style="color:var(--mt);font-size:13px">Nenhuma norma.</p>';return;}lst.innerHTML=norm.map(n=>`<div class="ni"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px"><div><span class="bdg ${NCATB[n.categoria]||'bgr'}" style="margin-right:4px">${NCATL[n.categoria]||n.categoria}</span><span class="bdg bgr" style="font-size:10px">${NPERL[n.periodo]||n.periodo}</span></div><button class="btn bdn bs" onclick="delNorma('${n.id}')">✕</button></div><div style="font-size:13px;font-weight:600;margin-bottom:3px">${eH(n.titulo)}</div>${n.descricao?`<div style="font-size:13px;white-space:pre-wrap">${eH(n.descricao)}</div>`:''}<div style="font-size:11px;color:var(--mt);margin-top:4px">${n.responsavel?'👤 '+eH(n.responsavel)+' · ':''}📅 ${fdt(n.criadoEm)}</div></div>`).join('');}
+function delNorma(id){conf('Excluir norma?','',()=>{DB.normas=DB.normas.filter(n=>n.id!==id);saveDB();renderNormas();toast('Excluído.');});}
+function renderNotas(filter){
+  filter=filter||'';const cc=G('notas-ct');let html='';
+  NTS.forEach(cat=>{const items=cat.itens.filter(i=>!filter||(i.t+' '+i.d).toLowerCase().includes(filter));if(!items.length)return;html+=`<div style="margin-bottom:14px"><div class="ncath" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">${cat.cat} <span>▼</span></div><div>${items.map(i=>`<div class="nitem"><div class="nt">${eH(i.t)}</div><div class="nd">${eH(i.d)}</div></div>`).join('')}</div></div>`;});
+  cc.innerHTML=html||'<p style="color:var(--mt)">Nenhum resultado.</p>';
+}
+function filterNotas(){renderNotas((G('nota-srch')?.value||'').toLowerCase());}
+function renderDash(){
+  const f1a=DB.ambientes.filter(a=>['1','2','3'].includes(a.status||'2'));
+  const f2a=DB.ambientes.filter(a=>['4','5','6'].includes(a.status||'2'));
+  const f3a=DB.ambientes.filter(a=>['7','8','9'].includes(a.status||'2'));
+  const fda=DB.ambientes.filter(a=>(a.status||'2')==='10');
+  G('fn1').textContent=f1a.length;G('fn1s').textContent=f1a.length?f1a.slice(0,2).map(a=>eH(a.cliente)).join(', ')+(f1a.length>2?'...':''):'nenhum';
+  G('fn2').textContent=f2a.length;G('fn2s').textContent=f2a.length?f2a.slice(0,2).map(a=>eH(a.cliente)).join(', ')+(f2a.length>2?'...':''):'nenhum';
+  G('fn3').textContent=f3a.length;G('fn3s').textContent=f3a.length?f3a.slice(0,2).map(a=>eH(a.cliente)).join(', ')+(f3a.length>2?'...':''):'nenhum';
+  G('fnd').textContent=fda.length;
+  const da=G('d-amb');
+  if(!DB.ambientes.length)da.innerHTML='<p style="color:var(--mt);font-size:13px">Nenhum ambiente.</p>';
+  else da.innerHTML=DB.ambientes.slice(-5).reverse().map(a=>{const pct=calcProg(a.id);const t=TIPOS.find(x=>x.id===a.tipo)||{ico:'📦'};const st=STS[a.status||'2']||{l:'—',c:'bgr'};return`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f5f5f5"><span style="font-size:16px">${t.ico}</span><div style="flex:1"><div style="font-size:13px;font-weight:500">${eH(a.cliente)} — ${eH(a.nome)}</div><div style="display:flex;align-items:center;gap:6px;margin-top:3px"><span class="bdg ${st.c}" style="font-size:10px">${st.l}</span><div class="pb" style="flex:1"><div class="fi" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--mt)">${pct}%</span></div></div><button class="btn bg bs" onclick="openCK('${a.id}')">Ver</button></div>`;}).join('');
+  const dal=G('d-alrt');if(dal){const al=[];DB.ambientes.forEach(a=>{if((a.status||'2')==='3'){const d=Math.floor((Date.now()-new Date(a.criadoEm||Date.now()).getTime())/(86400000));if(d>7)al.push(`<div class="alrt">⚠️ <div><strong>${eH(a.cliente)} — ${eH(a.nome)}</strong> aguardando aprovação há ${d} dias</div></div>`);}if(a.prazo&&new Date(a.prazo)<new Date()&&(a.status||'2')!=='10')al.push(`<div class="alrt">🔴 <div><strong>${eH(a.cliente)} — ${eH(a.nome)}</strong> prazo vencido (${fd(a.prazo)})</div></div>`);});dal.innerHTML=al.length?al.join(''):'<p style="color:var(--mt);font-size:13px">✅ Nenhum alerta.</p>';}
+  const df=G('d-fr');if(df){if(!DB.fresas.length)df.innerHTML='<p style="color:var(--mt);font-size:13px">Nenhuma fresa.</p>';else{const st={ok:0,desgaste:0,troca:0,ausente:0};DB.fresas.forEach(f=>st[f.estado]=(st[f.estado]||0)+1);df.innerHTML=`<div style="display:flex;gap:12px;margin-bottom:8px"><div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--ok)">${st.ok}</div><div style="font-size:11px;color:var(--mt)">OK</div></div><div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--wn)">${st.desgaste}</div><div style="font-size:11px;color:var(--mt)">Desgaste</div></div><div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--dn)">${st.troca}</div><div style="font-size:11px;color:var(--mt)">Trocar</div></div></div>`;}}
+  const dd=G('d-dec');const ults=[...DB.decisoes].reverse().slice(0,3);if(!ults.length)dd.innerHTML='<p style="color:var(--mt);font-size:13px">Nenhuma decisão.</p>';else dd.innerHTML=ults.map(d=>{const a=DB.ambientes.find(x=>x.id===d.ambienteId);return`<div class="di" style="margin-bottom:7px"><span class="bdg ${CATB[d.categoria]||'bgr'}" style="margin-right:5px">${CATL[d.categoria]||d.categoria}</span><strong>${eH(d.titulo)}</strong><div class="dm">${a?eH(a.cliente)+' — '+eH(a.nome):'?'} · ${fdt(d.criadoEm)}</div></div>`;}).join('');
+  const dn=G('d-norm');const rn=[...DB.normas].reverse().slice(0,2);const rp=[...DB.padroes].reverse().slice(0,2);if(!rn.length&&!rp.length)dn.innerHTML='<p style="color:var(--mt);font-size:13px">Nenhum registro.</p>';else dn.innerHTML=[...rn.map(n=>`<div style="padding:5px 0;border-bottom:1px solid #f5f5f5"><span class="bdg ${NCATB[n.categoria]||'bgr'}" style="margin-right:4px;font-size:10px">${NCATL[n.categoria]||n.categoria}</span><span style="font-size:13px;font-weight:500">${eH(n.titulo)}</span></div>`),...rp.map(p=>`<div style="padding:5px 0;border-bottom:1px solid #f5f5f5"><span class="bdg bor" style="margin-right:4px;font-size:10px">${PAMBL[p.ambiente]||p.ambiente}</span><span style="font-size:13px;font-weight:500">${eH(p.titulo)}</span></div>`)].join('');
+}
+function expD(){const b=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=`backup_ppcp_${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(u);toast('Backup exportado!');}
+function impD(){G('imp-in').click();}
+function procImp(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=x=>{try{const p=JSON.parse(x.target.result);if(!p.ambientes)throw new Error();conf('Importar backup?','Substitui todos os dados.',()=>{DB=p;if(!DB.normas)DB.normas=[];if(!DB.padroes)DB.padroes=[];if(!DB.ck)DB.ck={};if(!DB.obs)DB.obs={};if(!DB.gtpl)DB.gtpl=jcp(GD);if(!DB.ttpl)DB.ttpl={};saveDB();renderDash();toast('Importado!');});}catch{toast('Arquivo inválido.');}};r.readAsText(f);ev.target.value='';}
+function rst(){conf('Resetar todos os dados?','Ação irreversível.',()=>{DB={ambientes:[],fresas:[],decisoes:[],padroes:[],normas:[],ck:{},obs:{},gtpl:jcp(GD),ttpl:{}};saveDB();renderDash();toast('Resetado.');});}
+function V(id){const el=G(id);return el?el.value.trim():'';}
+function G(id){return document.getElementById(id);}
+function S(id,val){const el=G(id);if(el)el.value=val;}
+function eH(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+function fd(iso){if(!iso)return'—';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
+function fdt(iso){const d=new Date(iso);return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function toast(msg){const el=G('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800);}
+let _cb=null;
+function conf(t,m,cb){G('mc-t').textContent=t;G('mc-m').textContent=m;_cb=cb;omo('mo-conf');}
+G('mc-b').onclick=()=>{cmo('mo-conf');if(_cb)_cb();};
+function omo(id){G(id).classList.add('open');}
+function cmo(id){G(id).classList.remove('open');}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',ev=>{if(ev.target===m)cmo(m.id);}));
+loadDB();renderDash();bTipos();renderNotas();gdRenderStatus('disconnected');gdInit();
+
+</script>
+</body>
+</html>
